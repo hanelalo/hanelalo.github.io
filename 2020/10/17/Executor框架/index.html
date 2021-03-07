@@ -1,0 +1,222 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Executor框架 | Hanelalo Letter</title><meta name="keywords" content="Java"><meta name="author" content="hanelalo"><meta name="copyright" content="hanelalo"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="虽然 Java 提供了手动创建线程的操作方式，但是实际生产环境中，肯定不会允许无限创建线程，因为服务器会炸，所以 JDK 提供了 Exexutor 框架用来管理线程。 Executor 是一个接口，也是整个框架最核心的接口。 1234567891011121314public interface Executor &amp;#123;    &#x2F;**     * Executes the given com">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Executor框架">
+<meta property="og:url" content="http://hanelalo.gitee.io/2020/10/17/Executor%E6%A1%86%E6%9E%B6/index.html">
+<meta property="og:site_name" content="Hanelalo Letter">
+<meta property="og:description" content="虽然 Java 提供了手动创建线程的操作方式，但是实际生产环境中，肯定不会允许无限创建线程，因为服务器会炸，所以 JDK 提供了 Exexutor 框架用来管理线程。 Executor 是一个接口，也是整个框架最核心的接口。 1234567891011121314public interface Executor &amp;#123;    &#x2F;**     * Executes the given com">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://hanelalo.gitee.io/img/coolHue-43CBFF-9708CC.png">
+<meta property="article:published_time" content="2020-10-17T15:43:55.000Z">
+<meta property="article:modified_time" content="2021-03-07T15:44:59.686Z">
+<meta property="article:author" content="hanelalo">
+<meta property="article:tag" content="Java">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://hanelalo.gitee.io/img/coolHue-43CBFF-9708CC.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://hanelalo.gitee.io/2020/10/17/Executor%E6%A1%86%E6%9E%B6/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'mediumZoom',
+  Snackbar: undefined,
+  source: {
+    jQuery: 'https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js',
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+    },
+    fancybox: {
+      js: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isanchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = { 
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: false,
+  postUpdate: '2021-03-07 23:44:59'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    })(window)</script><meta name="generator" content="Hexo 5.2.0"></head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="author-avatar"><img class="avatar-img" src="/img/avatar.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">25</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">10</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">7</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/blog/"><i class="fa-fw fas fa-book"></i><span> 闲书杂记</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 有关于我</span></a></div><div class="menus_item"><a class="site-page" href="/normal-website"><i class="fa-fw fas fa-atlas"></i><span> 常用网站</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/coolHue-43CBFF-9708CC.png')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">Hanelalo Letter</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/blog/"><i class="fa-fw fas fa-book"></i><span> 闲书杂记</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 有关于我</span></a></div><div class="menus_item"><a class="site-page" href="/normal-website"><i class="fa-fw fas fa-atlas"></i><span> 常用网站</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Executor框架</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2020-10-17T15:43:55.000Z" title="发表于 2020-10-17 23:43:55">2020-10-17</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2021-03-07T15:44:59.686Z" title="更新于 2021-03-07 23:44:59">2021-03-07</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E6%8A%80%E6%9C%AF/">多线程技术</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><p>虽然 Java 提供了手动创建线程的操作方式，但是实际生产环境中，肯定不会允许无限创建线程，因为服务器会炸，所以 JDK 提供了 Exexutor 框架用来管理线程。</p>
+<p>Executor 是一个接口，也是整个框架最核心的接口。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Executor</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Executes the given command at some time in the future.  The command</span></span><br><span class="line"><span class="comment">     * may execute in a new thread, in a pooled thread, or in the calling</span></span><br><span class="line"><span class="comment">     * thread, at the discretion of the &#123;<span class="doctag">@code</span> Executor&#125; implementation.</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> command the runnable task</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@throws</span> RejectedExecutionException if this task cannot be</span></span><br><span class="line"><span class="comment">     * accepted for execution</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@throws</span> NullPointerException if command is null</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">execute</span><span class="params">(Runnable command)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>整个 Executor 框架的主要成员和相应的功能如下：</p>
+<ul>
+<li><p><code>ThreadPoolExecutor</code></p>
+<p>ThreadPoolExecutor 的核心参数如下：</p>
+<ul>
+<li><p><code>corePoolSize</code></p>
+<p>核心线程数。</p>
+</li>
+<li><p>maximumPoolSize</p>
+<p>最大线程数</p>
+</li>
+<li><p><code>keepAliveTime</code></p>
+<p>线程空闲时间</p>
+</li>
+<li><p><code>unit</code></p>
+<p>线程空闲时间单位</p>
+</li>
+<li><p><code>workQueue</code></p>
+<p>任务队列，是一个阻塞队列。</p>
+</li>
+<li><p><code>threadFactory</code></p>
+<p>线程工厂。</p>
+</li>
+</ul>
+<p>通常通过 Executors 工厂类创建，Executors 能创建三种 ThreadPoolExecutor：</p>
+<ul>
+<li><p><code>SingleThreadExecutor</code></p>
+<p>只有一个工作线程，所以初始化 ThreadPoolExecutor 时传入的核心线程数和最大线程数都是 1。适用于需要异步但是也需要按照某种顺序执行的场景。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> ExecutorService <span class="title">newSingleThreadExecutor</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> FinalizableDelegatedExecutorService</span><br><span class="line">        (<span class="keyword">new</span> ThreadPoolExecutor(<span class="number">1</span>, <span class="number">1</span>,</span><br><span class="line">                                <span class="number">0L</span>, TimeUnit.MILLISECONDS,</span><br><span class="line">                                <span class="keyword">new</span> LinkedBlockingQueue&lt;Runnable&gt;()));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>FixedThreadPool</code></p>
+<p>固定线程数的线程池。核心线程数和最大线程数一样。适用于需要进行资源管理的服务。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> ExecutorService <span class="title">newFixedThreadPool</span><span class="params">(<span class="keyword">int</span> nThreads, ThreadFactory threadFactory)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> ThreadPoolExecutor(nThreads, nThreads,</span><br><span class="line">                                  <span class="number">0L</span>, TimeUnit.MILLISECONDS,</span><br><span class="line">                                  <span class="keyword">new</span> LinkedBlockingQueue&lt;Runnable&gt;(),</span><br><span class="line">                                  threadFactory);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>CachedThreadPool</code></p>
+<p>核心线程数为 0，但是最大线程数位 <code>Integer.MAX_VALUE</code> 基本相当于不限制，线程空闲存活时间位为 1 分钟，因为线程可以无限创建，所以更适合做一些能快速完成的任务，不然就会出现一台服务器上创建成千上万个线程的情况。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> ExecutorService <span class="title">newCachedThreadPool</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> ThreadPoolExecutor(<span class="number">0</span>, Integer.MAX_VALUE,</span><br><span class="line">                                  <span class="number">60L</span>, TimeUnit.SECONDS,</span><br><span class="line">                                  <span class="keyword">new</span> SynchronousQueue&lt;Runnable&gt;());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p><code>ScheduledThreadPoolExecutor</code></p>
+<p>和 ThreadPoolExecutor 一样，通常也是通过 Executors 创建。创建的 ScheduledThreadPoolExecutor 其实最后也是基于 ThreadPoolExecutor 实现的，不同点在于前面讲到的三种普通的 ThreadPoolExecutor 传入的任务队列是基于链表实现的<code>LinkedBlockingQueue</code>， 因为 <code>ScheduledThreadPoolExecutor</code> 一般都是用来做定时任务或者延迟任务，所以传入的是<code>DelayWorkQueue</code>。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">ScheduledThreadPoolExecutor</span><span class="params">(<span class="keyword">int</span> corePoolSize)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">super</span>(corePoolSize, Integer.MAX_VALUE, <span class="number">0</span>, NANOSECONDS,</span><br><span class="line">          <span class="keyword">new</span> DelayedWorkQueue());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Executors 可以创建两种 <code>ScheduledThreadPoolExecutor</code>:</p>
+<ul>
+<li><p><code>ScheduledThreadPoolExecutor</code></p>
+<p><code>ScheduledThreadPoolExecutor</code>是<code>ThreadPoolExecutor</code>的子类，适用于有多个定时任务的场景。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ScheduledThreadPoolExecutor</span><span class="params">(<span class="keyword">int</span> corePoolSize)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(corePoolSize, Integer.MAX_VALUE, <span class="number">0</span>, NANOSECONDS,</span><br><span class="line">              <span class="keyword">new</span> DelayedWorkQueue());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>SingleThreadScheduledExecutor</code></p>
+<p>适用于需要单个线程执行后台任务且有顺序要求的场景。</p>
+</li>
+</ul>
+</li>
+<li><p><code>Future</code>接口</p>
+<p>当一个任务需要返回值时，通过 <code>submit</code> 方法将任务（<code>Runnable</code>或<code>Callable</code>接口的实现）提交到 <code>ThreadPoolExecutor</code>或 <code>ScheduledThreadPoolExecutor</code> ，会返回一个 Future 接口的实现类，一般是 <code>FutureTask</code>。</p>
+</li>
+<li><p><code>Runnable</code> 和 <code>Callable</code></p>
+<p>这两个接口的实现都可以当作任务提交到 ThreadPoolExecutor 执行，区别在于 <code>Runnable</code> 没有返回值，<code>Callable</code> 有返回值，<code>Executors</code>提供了一个将 <code>Runnable</code>接口封装成 <code>Callable</code> 接口的方法。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> &lt;T&gt; <span class="function">Callable&lt;T&gt; <span class="title">callable</span><span class="params">(Runnable task, T result)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (task == <span class="keyword">null</span>)</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> NullPointerException();</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> RunnableAdapter&lt;T&gt;(task, result);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>当 submit 的任务是 Runnable 接口时，会调用上面的方法进行转换。</p>
+</li>
+</ul>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">hanelalo</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://hanelalo.gitee.io/2020/10/17/Executor%E6%A1%86%E6%9E%B6/">http://hanelalo.gitee.io/2020/10/17/Executor%E6%A1%86%E6%9E%B6/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://hanelalo.gitee.io" target="_blank">Hanelalo Letter</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Java/">Java</a></div><div class="post_share"><div class="social-share" data-image="/img/coolHue-43CBFF-9708CC.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2020/10/24/Redis%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"><img class="prev-cover" src="/img/coolHue-ABDCFF-0396FF.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">Redis学习笔记</div></div></a></div><div class="next-post pull-right"><a href="/2020/10/12/%E9%87%8D%E5%85%A5%E9%94%81%E5%92%8C%E8%AF%BB%E5%86%99%E9%94%81/"><img class="next-cover" src="/img/coolHue-43CBFF-9708CC.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">重入锁和读写锁</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span> 相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2020/10/07/实现一个简单的线程池/" title="实现一个简单的线程池"><img class="cover" src="/img/coolHue-F6CEEC-D939CD.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-10-07</div><div class="title">实现一个简单的线程池</div></div></a></div><div><a href="/2020/10/12/重入锁和读写锁/" title="重入锁和读写锁"><img class="cover" src="/img/coolHue-43CBFF-9708CC.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-10-12</div><div class="title">重入锁和读写锁</div></div></a></div><div><a href="/2020/10/11/队列同步器原理分析/" title="队列同步器原理分析"><img class="cover" src="/img/coolHue-43CBFF-9708CC.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-10-11</div><div class="title">队列同步器原理分析</div></div></a></div><div><a href="/2020/10/07/锁和队列同步器/" title="锁和队列同步器"><img class="cover" src="/img/coolHue-90F7EC-32CCBC.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-10-07</div><div class="title">锁和队列同步器</div></div></a></div><div><a href="/2021/03/07/静态代理和动态代理/" title="静态代理和动态代理"><img class="cover" src="/img/coolHue-5EFCE8-736EFE.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-03-07</div><div class="title">静态代理和动态代理</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="card-info-avatar is-center"><img class="avatar-img" src="/img/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/><div class="author-info__name">hanelalo</div><div class="author-info__description">You are always my hero</div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">25</div></a></div><div class="card-info-data-item is-center"><a href="/tags/"><div class="headline">标签</div><div class="length-num">10</div></a></div><div class="card-info-data-item is-center"><a href="/categories/"><div class="headline">分类</div><div class="length-num">7</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/hanelalo"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/hanelalo" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:hanelalo@163.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">三十功名尘与土，八百里路云和月</div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2021/03/07/%E9%9D%99%E6%80%81%E4%BB%A3%E7%90%86%E5%92%8C%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86/" title="静态代理和动态代理"><img src="/img/coolHue-5EFCE8-736EFE.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="静态代理和动态代理"/></a><div class="content"><a class="title" href="/2021/03/07/%E9%9D%99%E6%80%81%E4%BB%A3%E7%90%86%E5%92%8C%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86/" title="静态代理和动态代理">静态代理和动态代理</a><time datetime="2021-03-07T04:17:01.000Z" title="发表于 2021-03-07 12:17:01">2021-03-07</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/03/06/%E4%B8%80%E5%91%A8%E9%9A%8F%E8%AE%B0-No-1/" title="一周随记 No.1"><img src="/img/coolHue-ABDCFF-0396FF.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="一周随记 No.1"/></a><div class="content"><a class="title" href="/2021/03/06/%E4%B8%80%E5%91%A8%E9%9A%8F%E8%AE%B0-No-1/" title="一周随记 No.1">一周随记 No.1</a><time datetime="2021-03-06T09:02:48.000Z" title="发表于 2021-03-06 17:02:48">2021-03-06</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/01/19/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92%EF%BC%88%E4%BA%8C%EF%BC%89/" title="动态规划（二）"><img src="/img/coolHue-90F7EC-32CCBC.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="动态规划（二）"/></a><div class="content"><a class="title" href="/2021/01/19/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92%EF%BC%88%E4%BA%8C%EF%BC%89/" title="动态规划（二）">动态规划（二）</a><time datetime="2021-01-19T14:45:31.000Z" title="发表于 2021-01-19 22:45:31">2021-01-19</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/01/18/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92%EF%BC%88%E4%B8%80%EF%BC%89/" title="动态规划（一）"><img src="/img/coolHue-43CBFF-9708CC.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="动态规划（一）"/></a><div class="content"><a class="title" href="/2021/01/18/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92%EF%BC%88%E4%B8%80%EF%BC%89/" title="动态规划（一）">动态规划（一）</a><time datetime="2021-01-18T15:32:04.000Z" title="发表于 2021-01-18 23:32:04">2021-01-18</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/01/09/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/" title="设计模式:单例模式"><img src="/img/coolHue-F6CEEC-D939CD.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="设计模式:单例模式"/></a><div class="content"><a class="title" href="/2021/01/09/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/" title="设计模式:单例模式">设计模式:单例模式</a><time datetime="2021-01-09T03:41:08.000Z" title="发表于 2021-01-09 11:41:08">2021-01-09</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2021 By hanelalo</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div></div><hr/><div id="local-search-results"></div><span class="search-close-button"><i class="fas fa-times"></i></span></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/medium-zoom/dist/medium-zoom.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page/instantpage.min.js" type="module"></script><script src="/js/search/local-search.js"></script><script>var preloader = {
+  endLoading: () => {
+    document.body.style.overflow = 'auto';
+    document.getElementById('loading-box').classList.add("loaded")
+  },
+  initLoading: () => {
+    document.body.style.overflow = '';
+    document.getElementById('loading-box').classList.remove("loaded")
+
+  }
+}
+window.addEventListener('load',preloader.endLoading())</script><div class="js-pjax"></div><script defer="defer" id="ribbon" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/canvas-ribbon.min.js" size="150" alpha="0.6" zIndex="-1" mobile="false" data-click="false"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
