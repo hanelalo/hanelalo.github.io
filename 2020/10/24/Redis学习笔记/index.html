@@ -1,0 +1,303 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Redis学习笔记 | 18 度水</title><meta name="keywords" content="Redis"><meta name="author" content="18 度水"><meta name="copyright" content="18 度水"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Redis 学习笔记持久化Redis 提供了两种持久化策略，AOF 和 RDB，AOF 是直接保存服务器保存的指令，服务器启动时再重新执行这些指令即可，而 RDB 则是保存一份内存的二进制快照，Redis 启动时加载，如果服务器开启了 AOF 功能，会优先加载 AOF 的文件，如果没开启 AOF 功能，才会加载 RDB 文件。 AOF 持久化AOF 持久化是以命令请求的方式保存，AOF 分为命令追">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Redis学习笔记">
+<meta property="og:url" content="http://hanelalo.github.io/2020/10/24/Redis%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/index.html">
+<meta property="og:site_name" content="18 度水">
+<meta property="og:description" content="Redis 学习笔记持久化Redis 提供了两种持久化策略，AOF 和 RDB，AOF 是直接保存服务器保存的指令，服务器启动时再重新执行这些指令即可，而 RDB 则是保存一份内存的二进制快照，Redis 启动时加载，如果服务器开启了 AOF 功能，会优先加载 AOF 的文件，如果没开启 AOF 功能，才会加载 RDB 文件。 AOF 持久化AOF 持久化是以命令请求的方式保存，AOF 分为命令追">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://hanelalo.github.io/img/coolHue-ABDCFF-0396FF.png">
+<meta property="article:published_time" content="2020-10-24T09:37:02.000Z">
+<meta property="article:modified_time" content="2021-04-11T12:20:56.142Z">
+<meta property="article:author" content="18 度水">
+<meta property="article:tag" content="Redis">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://hanelalo.github.io/img/coolHue-ABDCFF-0396FF.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://hanelalo.github.io/2020/10/24/Redis%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'mediumZoom',
+  Snackbar: undefined,
+  source: {
+    jQuery: 'https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js',
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+    },
+    fancybox: {
+      js: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isanchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = { 
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2021-04-11 20:20:56'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    })(window)</script><meta name="generator" content="Hexo 5.2.0"></head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="author-avatar"><img class="avatar-img" src="/img/avatar.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">39</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">14</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">11</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/blog/"><i class="fa-fw fas fa-book"></i><span> 闲书杂记</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 有关于我</span></a></div><div class="menus_item"><a class="site-page" href="/normal-website"><i class="fa-fw fas fa-atlas"></i><span> 常用网站</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/coolHue-ABDCFF-0396FF.png')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">18 度水</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/blog/"><i class="fa-fw fas fa-book"></i><span> 闲书杂记</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 有关于我</span></a></div><div class="menus_item"><a class="site-page" href="/normal-website"><i class="fa-fw fas fa-atlas"></i><span> 常用网站</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Redis学习笔记</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2020-10-24T09:37:02.000Z" title="发表于 2020-10-24 17:37:02">2020-10-24</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2021-04-11T12:20:56.142Z" title="更新于 2021-04-11 20:20:56">2021-04-11</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Redis/">Redis</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span><span class="post-meta-separator">|</span><span class="post-meta-commentcount"><i class="far fa-comments fa-fw post-meta-icon"></i><span class="post-meta-label">评论数:</span><a href="/2020/10/24/Redis%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/#post-comment"><span class="gitalk-comment-count"></span></a></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="Redis-学习笔记"><a href="#Redis-学习笔记" class="headerlink" title="Redis 学习笔记"></a>Redis 学习笔记</h1><h2 id="持久化"><a href="#持久化" class="headerlink" title="持久化"></a>持久化</h2><p>Redis 提供了两种持久化策略，AOF 和 RDB，AOF 是直接保存服务器保存的指令，服务器启动时再重新执行这些指令即可，而 RDB 则是保存一份内存的二进制快照，Redis 启动时加载，如果服务器开启了 AOF 功能，会优先加载 AOF 的文件，如果没开启 AOF 功能，才会加载 RDB 文件。</p>
+<h3 id="AOF-持久化"><a href="#AOF-持久化" class="headerlink" title="AOF 持久化"></a>AOF 持久化</h3><p>AOF 持久化是以命令请求的方式保存，AOF 分为命令追加、文件写入、文件同步三个步骤。</p>
+<ol>
+<li><p>命令追加。AOF 配置打开时，每执行完一个写命令之后，这次命令执行会以协议格式写到 aof_buf 缓冲区。</p>
+</li>
+<li><p>文件写入与同步。Redis 的进程从实现上是一个事件循环，这个循环中文件事件负责接收客户端命令请求和回复命令，时间时间执行一些定时任务，比如定期删除过期键。每次文件事件可能会处理一些写命令请求，就可能会有新的内容写入到 aof_buf 中，所以每个事件循环之后，都会考虑是否要将 aof_buf 中的内容写入到磁盘文件中。而在将 aof_buf 中的内容持久化时，根据<code>appendfsync</code>配置又会有不同的行为，在讲解<code>appendfsync</code>配置之前，先了解一下文件同步，现代操作系统在写入文件时，其实并不是调用写方法就真的写到文件里去，为了提高性能，采取按页存储的策略，当要写入的数据达到一定的大小时才真正的写道磁盘文件中，在此之前其实是将数据保存在缓存中，这个缓存叫做 PageCache，前面讲的文件写入，其实是将文件内容从 aof_buf 写入到了 PageCache，而同步的意思就是从 PageCache 将文件内容写入到真正的文件磁盘中。接下来看看<code>appendfsync</code>这项配置的说明及其特性：</p>
+<ul>
+<li><p>always</p>
+<p>将 aof_buf 中所有内容写入 PageCache 并同步到 AOF 文件中。因此 always 是三种配置种效率最低的一个，但是也因为是实时写入和同步的，安全性也是最高的。</p>
+</li>
+<li><p>everysec</p>
+<p>将 aof_buf 中的内容写入 AOF 文件的 PageCache 中，如果当前距离上次同步文件超过 1 秒，则同步文件，这个动作由单独的线程完成。因为并不是每个事件循环都会同步，所以效率上比 always 快，就算故障停机，也只会丢失 1 秒的数据而已，安全性也还在可接受的范围内。</p>
+</li>
+<li><p>no</p>
+<p>仅仅只是将 aof_buf 中的内容写入到 PageCache 中，不主动同步，何时同步交由操作系统决定。因为该模式下无需执行同步操作，所以效率是最快的，但是因为同步依赖于操作系统的判断，所以该模式的同步时间也是三种模式种最长的，并且安全性也不如前两种，如果不小心故障停机，会丢失上次同步之后的所有数据。</p>
+</li>
+</ul>
+</li>
+</ol>
+<h4 id="AOF-重写"><a href="#AOF-重写" class="headerlink" title="AOF 重写"></a>AOF 重写</h4><p>因为 AOF 是以命令请求的方式存储，当 AOF 中的文件的内容越来越多时，文件越来越大，可能会造成一些意想不到的问题，为避免一些不必要的文件膨胀，Redis 提供了文件重写的功能。这个功能具体有什么作用呢？</p>
+<p>举个例子，假如 redis 连续执行以下命令：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">redis&gt; RPUSH list <span class="string">&quot;A&quot;</span> <span class="string">&quot;B&quot;</span></span><br><span class="line">redis&gt; RPUSH list <span class="string">&quot;C&quot;</span></span><br><span class="line">redis&gt; RPUSH list <span class="string">&quot;D&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>三条命令都是向 list 里面加入一个元素，按照前面对 AOF 的理解，会保存三条命令请求的记录到 AOF 文件中，但是仔细想想，其实只需要保存一条命令请求就行了，一条命令将上面三条命令的内容全都写入，其实这就是重写的原理了。</p>
+<p>执行 AOF 重写的指令是<code>BGREWRITEAOF</code>。</p>
+<p>AOF 重写的时候并不是独取已经存在的 AOF 文件再进行重写，而是直接将当前内存中各个键值对最新的值以命令请求的方式保存。</p>
+<p>这里还会涉及到一个问题，就是缓冲区溢出的问题，如果一个键值对的内容很多的时候，比如哈希表、列表等，不加限制的话，可能会造成客户端的缓冲区溢出，所以 Redis 设定了保存的每条指令的大小，当一条指令的内容超过这个阈值时，就会使用新的指令记录剩下的内容。</p>
+<p>当执行 AOF 重写时，会阻塞当前的线程，所以 Redis 将这个指令的执行放到了子进程里面，当子进程执行重写的时候，如果服务器的服务进程又处理了写命令的请求，就会导致子进程重写完之后的结果和现在的内存实际的数据不一致。</p>
+<p>为了解决上面的问题，Redis 又提供了一个重写的缓冲区，在创建子进程执行重写开始，服务器接受的写命令，不仅会写入到 AOF 缓冲区，还会写入到 AOF 重写缓冲区，当子进程执行完之后，会通知父进程将 AOF 重写缓冲区的内容写入并同步到 AOF 重写的文件中，然后再将重写的文件改名，覆盖之前的 AOF 文件，整个过程中，父进程只在将重写缓冲区的内容写入和同步到文件以及改名时会阻塞，其他时候都可以正常处理请求。</p>
+<p>经过上面的讲解，其实 AOF 重写后的文件肯定是比普通的 AOF 持久化文件要小很多的，毕竟对指令进行了“压缩”。</p>
+<h3 id="RDB-持久化"><a href="#RDB-持久化" class="headerlink" title="RDB 持久化"></a>RDB 持久化</h3><p>RDB 持久化策略，是将当前内存中的键值对以二进制的形式保存到磁盘，Redis 启动时会自动加载 RDB 文件。</p>
+<p>要通过 RDB 的方式持久化，执行的命令是 <code>SAVE</code> 或者 <code>BGSAVE</code>，这两者的区别在于，<code>SAVE</code>会阻塞服务器进程，指令执行过程中，服务器不能处理任何指令请求，而<code>BGSAVE</code>则是派生一个子进程来持久化，父进程继续处理指令请求。</p>
+<p>因为 BGSAVE 是交由子进程执行，不会阻塞父进程处理命令请求，所以 redis 提供了<code>save</code> 配置项，用来配置自动执行<code>BGSAVE</code>。</p>
+<p>以官方提供的配置为例。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">save 900 1</span><br><span class="line">save 300 10</span><br><span class="line">save 60 10000</span><br></pre></td></tr></table></figure>
+
+<p>这三行配置的意思分别是：</p>
+<ul>
+<li>900 秒内至少进行了 1 次修改，则执行<code>BGSAVE</code></li>
+<li>300 秒内至少进行了 10 次修改，则执行<code>BGSAVE</code></li>
+<li>60 秒内至少执行了 1000 次修改，则执行<code>BGSAVE</code></li>
+</ul>
+<h2 id="Redis-过期键删除策略"><a href="#Redis-过期键删除策略" class="headerlink" title="Redis 过期键删除策略"></a>Redis 过期键删除策略</h2><p>解决方案分为三种：</p>
+<ul>
+<li><p>定时删除</p>
+<p>为每个设置过期时间的键建立一个定时器，到时间就删除该键。如果为每个有时效的键都建立一个定时器，那么当过期键数量到达一定量级时，就算内存充裕，就会造成 CPU 资源的紧张。</p>
+</li>
+<li><p>惰性删除</p>
+<p>当键过期时先不管，访问键时，再判断当前键是否过期，过期就执行删除逻辑，没过期就返回值，这种策略对 CPU 来说很友好，但是如果一个过期键长期不被访问，就会长期存在于内存中，当这样的键较多时，就会造成内存的浪费。</p>
+</li>
+<li><p>定期删除</p>
+<p>设定一个时间周期，每隔一个时间周期对数据库检查一次，删除里面的过期键。从定时删除和惰性删除的介绍来看，都并不是很完美，总会顾此失彼，定时删除对 CPU 不友好，惰性删除可能对内存不是很友好，定时删除则更像是两者这种的策略，既不会造成很大的内存浪费，也不用建立很多定时器对 CPU 造成很大压力。</p>
+</li>
+</ul>
+<p>Redis 采用的是<strong>惰性删除+定期删除</strong>的组合策略。</p>
+<h3 id="RDB-和-AOF-对过期键的处理"><a href="#RDB-和-AOF-对过期键的处理" class="headerlink" title="RDB 和 AOF 对过期键的处理"></a>RDB 和 AOF 对过期键的处理</h3><p>在之前讲过 RDB 和 AOF 两种持久化方案，那么这两种持久化方案针对过期键会怎么处理呢。主要关注以下三个问题：</p>
+<ol>
+<li><p><strong>RDB 和 AOF 在持久化时，如何处理过期键？</strong></p>
+<p>RDB 在持久化时，会对过期键检查，过期的键不会持久化到二进制文件中。</p>
+<p>AOF 持久化时，并不会查看键是否过期，但是因为 AOF 会记录每个写指令，所以当键过期后，惰性删除或者定时删除时，肯定会有一个删除过期键的指令，这个指令也会被显式记录到 AOF 文件中。</p>
+</li>
+<li><p><strong>RDB 和 AOF 在加载时，如何处理过期键？</strong></p>
+<p>当 RDB 文件加载时，如果  redis 运行在复制模式下，那么主服务器不会加载已经过期的键，从服务则全部都会加载，但是主从同步的时候，因为主服务器上已经没有了过期键，所以从服务器上过期的键也会被同步掉。</p>
+<p>当</p>
+</li>
+<li><p><strong>AOF 重写时，如何处理过期键？</strong></p>
+<p>AOF 重写和 RDB 持久化一样，会忽略掉过期键。</p>
+</li>
+</ol>
+<h3 id="主从复制对过期键的处理"><a href="#主从复制对过期键的处理" class="headerlink" title="主从复制对过期键的处理"></a>主从复制对过期键的处理</h3><p>主服务器接收到读请求时，会检查键是否过期，过期则删除键，并向从服务器发送删除指令，使从服务器上的过期键也被删除。</p>
+<p>但是如果读指令发送到了从服务器，从服务器并不会检查键是否过期，而是直接返回键的值，直到接收到主服务器发来的删除该过期键的指令之后，从服务器上的过期键才会被删除。</p>
+<h2 id="主从复制"><a href="#主从复制" class="headerlink" title="主从复制"></a>主从复制</h2><p>redis 主从复制有两个版本，一个是 redis 2.8 以前的版本，一个是从 redis 2.8 开始的版本。</p>
+<p>不管是新的还是旧的版本，对于主从复制大方向上考虑两种情况：</p>
+<ul>
+<li>从服务器第一次和主服务器同步数据</li>
+<li>从服务器和主服务器断开连接一段时间后，重新连接时同步数据</li>
+</ul>
+<p>不管哪种情况，都是为了保证主从服务器上的数据一致性，所以当主服务器执行了写命令时，会发生命令传播，就是主服务器会向所有从服务器发送刚刚执行的写指令，保证数据一致性。</p>
+<p><strong>那么 redis 2.8 以前的版本和新版本的区别在哪里？</strong></p>
+<p><em>先看看 redis 2.8 以前的版本：</em></p>
+<p>当从服务器第一次向主服务器同步数据。</p>
+<ol>
+<li>向主服务器发送一条 <code>SYNC</code> 指令。</li>
+<li>主服务器收到 <code>SYNC</code> 指令后，执行 <code>BGSAVE</code> 生成 RDB 文件，同时生成一个缓冲区记录从执行 <code>BGSAVE</code> 开始执行的所有写命令。</li>
+<li>主服务器生成 RDB 后，将 RDB 文件发送给从服务器。</li>
+<li>从服务器载入接收到了 RDB 文件到内存。</li>
+<li>主服务器将刚生成的缓冲区中的指令发送给从服务器，从服务器执行后，和主服务器的数据达成一致。</li>
+</ol>
+<p>执行完以上步骤，当主服务器再接受到写指令是，会向从服务器也发送一次相同的指令，保证数据一致。</p>
+<p>如果从服务器和主服务器意外断开连接，再重新连接时，会再次执行上面所有步骤，虽然最终达到了数据一直，但是其实没必要这样做，因为如果断开连接之前的数据，从服务器有持久化，那重新连接时其实只需要同步在断开连接期间主服务器进行的修改即可。</p>
+<p>所以旧版复制实现，在重连时，效率不够。</p>
+<p><em>在 redis 2.8 开始，实现了新的复制方式。</em></p>
+<p>redis 2.8 版本开始的复制实现，依靠 <code>PSYNC</code> 命令。</p>
+<p><code>PSYNC</code> 有两种模式，一种时完整重同步，是针对从服务器第一次同步数据的实现，一种是部分重同步，针对从服务器断开重连的实现。</p>
+<p>针对第一次同步数据的情况，也就是完整重同步，和 <code>SYNC</code> 一样的处理。</p>
+<p>如果是断开重连的情况，出发的就是部分重同步，这里涉及到一个复制偏移量的概念，主服务器会记录当前已经被从服务器同步的偏移量，从服务器也会记录自己的同步偏移量，断开重连后，当主从偏移量不一致时，就复制偏差的这部分数据就好了。</p>
+<p>举个例子，最开始主服务器 M 复制偏移量为 10000，从服务器 A、B、C 的偏移量也是 10000，此时主从数据一致，然后从服务器 A 和主服务器断开连接，此后，主服务器执行了写指令，发生指令传播，B、C 从服务器复制成功，M、B、C 三台服务器的偏移量变为 10033，然后  A 服务器恢复连接，此时和主服务器有 33 个偏移量的数据未复制，向从服务器发送 <code>PSYNC</code> 指令，并报告当前偏移量时 10000，最终主从服务器就会同步中间这 33 个偏移量的数据。</p>
+<h3 id="基于-Docker-搭建一个主从架构"><a href="#基于-Docker-搭建一个主从架构" class="headerlink" title="基于 Docker 搭建一个主从架构"></a>基于 Docker 搭建一个主从架构</h3><h4 id="主服务器配置"><a href="#主服务器配置" class="headerlink" title="主服务器配置"></a>主服务器配置</h4><p>主要修改以下几项配置：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">requirepass &lt;password&gt; # 设置主服务器 redis 密码</span><br><span class="line"># bind 127.0.0.1 </span><br><span class="line">pretected-mode no</span><br></pre></td></tr></table></figure>
+
+<h4 id="从服务器配置"><a href="#从服务器配置" class="headerlink" title="从服务器配置"></a>从服务器配置</h4><p>从服务器修改配置项如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">requirepass &lt;password&gt; # 从服务器 redis 密码</span><br><span class="line">slaveof &lt;master_ip&gt; &lt;master_port&gt;</span><br><span class="line">masterauth &lt;master_password&gt;</span><br></pre></td></tr></table></figure>
+
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">18 度水</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://hanelalo.github.io/2020/10/24/Redis%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">http://hanelalo.github.io/2020/10/24/Redis%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://hanelalo.github.io" target="_blank">18 度水</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Redis/">Redis</a></div><div class="post_share"><div class="social-share" data-image="/img/coolHue-ABDCFF-0396FF.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2020/11/08/%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F%E5%92%8C%E8%AE%A1%E6%95%B0%E6%8E%92%E5%BA%8F/"><img class="prev-cover" src="/img/coolHue-FFE985-FA742B.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">快速排序和计数排序</div></div></a></div><div class="next-post pull-right"><a href="/2020/10/17/Executor%E6%A1%86%E6%9E%B6/"><img class="next-cover" src="/img/coolHue-FFE985-FA742B.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Executor框架</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span> 相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2021/04/11/Redis-分布式锁/" title="Redis 分布式锁"><img class="cover" src="/img/coolHue-5EFCE8-736EFE.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-04-11</div><div class="title">Redis 分布式锁</div></div></a></div></div></div><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="gitalk-container"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="card-info-avatar is-center"><img class="avatar-img" src="/img/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/><div class="author-info__name">18 度水</div><div class="author-info__description">You are always my hero</div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">39</div></a></div><div class="card-info-data-item is-center"><a href="/tags/"><div class="headline">标签</div><div class="length-num">14</div></a></div><div class="card-info-data-item is-center"><a href="/categories/"><div class="headline">分类</div><div class="length-num">11</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/hanelalo"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/hanelalo" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:hanelalo@163.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">三十功名尘与土，八百里路云和月</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Redis-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0"><span class="toc-number">1.</span> <span class="toc-text">Redis 学习笔记</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8C%81%E4%B9%85%E5%8C%96"><span class="toc-number">1.1.</span> <span class="toc-text">持久化</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#AOF-%E6%8C%81%E4%B9%85%E5%8C%96"><span class="toc-number">1.1.1.</span> <span class="toc-text">AOF 持久化</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#AOF-%E9%87%8D%E5%86%99"><span class="toc-number">1.1.1.1.</span> <span class="toc-text">AOF 重写</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#RDB-%E6%8C%81%E4%B9%85%E5%8C%96"><span class="toc-number">1.1.2.</span> <span class="toc-text">RDB 持久化</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Redis-%E8%BF%87%E6%9C%9F%E9%94%AE%E5%88%A0%E9%99%A4%E7%AD%96%E7%95%A5"><span class="toc-number">1.2.</span> <span class="toc-text">Redis 过期键删除策略</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#RDB-%E5%92%8C-AOF-%E5%AF%B9%E8%BF%87%E6%9C%9F%E9%94%AE%E7%9A%84%E5%A4%84%E7%90%86"><span class="toc-number">1.2.1.</span> <span class="toc-text">RDB 和 AOF 对过期键的处理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6%E5%AF%B9%E8%BF%87%E6%9C%9F%E9%94%AE%E7%9A%84%E5%A4%84%E7%90%86"><span class="toc-number">1.2.2.</span> <span class="toc-text">主从复制对过期键的处理</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6"><span class="toc-number">1.3.</span> <span class="toc-text">主从复制</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%BA%E4%BA%8E-Docker-%E6%90%AD%E5%BB%BA%E4%B8%80%E4%B8%AA%E4%B8%BB%E4%BB%8E%E6%9E%B6%E6%9E%84"><span class="toc-number">1.3.1.</span> <span class="toc-text">基于 Docker 搭建一个主从架构</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%BB%E6%9C%8D%E5%8A%A1%E5%99%A8%E9%85%8D%E7%BD%AE"><span class="toc-number">1.3.1.1.</span> <span class="toc-text">主服务器配置</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BB%8E%E6%9C%8D%E5%8A%A1%E5%99%A8%E9%85%8D%E7%BD%AE"><span class="toc-number">1.3.1.2.</span> <span class="toc-text">从服务器配置</span></a></li></ol></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2021/05/21/Dubbo-SPI%E6%9C%BA%E5%88%B6/" title="Dubbo SPI 机制"><img src="/img/coolHue-5EFCE8-736EFE.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Dubbo SPI 机制"/></a><div class="content"><a class="title" href="/2021/05/21/Dubbo-SPI%E6%9C%BA%E5%88%B6/" title="Dubbo SPI 机制">Dubbo SPI 机制</a><time datetime="2021-05-21T14:59:40.000Z" title="发表于 2021-05-21 22:59:40">2021-05-21</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/05/19/Dubbo%E5%85%A5%E9%97%A8/" title="Dubbo入门"><img src="/img/coolHue-43CBFF-9708CC.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Dubbo入门"/></a><div class="content"><a class="title" href="/2021/05/19/Dubbo%E5%85%A5%E9%97%A8/" title="Dubbo入门">Dubbo入门</a><time datetime="2021-05-19T13:41:25.000Z" title="发表于 2021-05-19 21:41:25">2021-05-19</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/05/16/%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83%E9%87%8D%E8%AF%95%E6%9C%BA%E5%88%B6/" title="注册中心重试机制"><img src="/img/coolHue-5EFCE8-736EFE.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="注册中心重试机制"/></a><div class="content"><a class="title" href="/2021/05/16/%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83%E9%87%8D%E8%AF%95%E6%9C%BA%E5%88%B6/" title="注册中心重试机制">注册中心重试机制</a><time datetime="2021-05-15T16:22:18.000Z" title="发表于 2021-05-16 00:22:18">2021-05-16</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/05/11/Duboo%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E5%92%8C%E8%AE%A2%E9%98%85/" title="Duboo服务注册和订阅"><img src="/img/coolHue-5EFCE8-736EFE.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Duboo服务注册和订阅"/></a><div class="content"><a class="title" href="/2021/05/11/Duboo%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E5%92%8C%E8%AE%A2%E9%98%85/" title="Duboo服务注册和订阅">Duboo服务注册和订阅</a><time datetime="2021-05-11T15:36:06.000Z" title="发表于 2021-05-11 23:36:06">2021-05-11</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/05/09/Dubbo-%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83/" title="Dubbo 注册中心"><img src="/img/coolHue-CE9FFC-7367F0.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Dubbo 注册中心"/></a><div class="content"><a class="title" href="/2021/05/09/Dubbo-%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83/" title="Dubbo 注册中心">Dubbo 注册中心</a><time datetime="2021-05-09T11:27:17.000Z" title="发表于 2021-05-09 19:27:17">2021-05-09</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2021 By 18 度水</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div></div><hr/><div id="local-search-results"></div><span class="search-close-button"><i class="fas fa-times"></i></span></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/medium-zoom/dist/medium-zoom.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page/instantpage.min.js" type="module"></script><script src="/js/search/local-search.js"></script><script>var preloader = {
+  endLoading: () => {
+    document.body.style.overflow = 'auto';
+    document.getElementById('loading-box').classList.add("loaded")
+  },
+  initLoading: () => {
+    document.body.style.overflow = '';
+    document.getElementById('loading-box').classList.remove("loaded")
+
+  }
+}
+window.addEventListener('load',preloader.endLoading())</script><div class="js-pjax"><script>function addGitalkSource () {
+  const ele = document.createElement('link')
+  ele.rel = 'stylesheet'
+  ele.href= 'https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.css'
+  document.getElementsByTagName('head')[0].appendChild(ele)
+}
+
+function loadGitalk () {
+  function initGitalk () {
+    var gitalk = new Gitalk({
+      clientID: 'ec5e809ca88a190ced34',
+      clientSecret: 'c33db042d9bf6ecb888ace6be89e85077132dd7f',
+      repo: 'comment-github',
+      owner: 'hanelalo',
+      admin: ['hanelalo'],
+      id: '27d5afef68e8dd7e950215446432d71f',
+      language: 'zh-CN',
+      perPage: 10,
+      distractionFreeMode: false,
+      pagerDirection: 'last',
+      createIssueManually: false,
+      updateCountCallback: commentCount
+    })
+    gitalk.render('gitalk-container')
+  }
+
+  if (typeof Gitalk === 'function') initGitalk()
+  else {
+    addGitalkSource()
+    getScript('https://cdn.jsdelivr.net/npm/gitalk@latest/dist/gitalk.min.js').then(initGitalk)
+  }
+}
+
+function commentCount(n){
+  let isCommentCount = document.querySelector('#post-meta .gitalk-comment-count')
+  if (isCommentCount) {
+    isCommentCount.innerHTML= n
+  }
+}
+
+if ('Gitalk' === 'Gitalk' || !false) {
+  if (false) btf.loadComment(document.getElementById('gitalk-container'), loadGitalk)
+  else loadGitalk()
+} else {
+  function loadOtherComment () {
+    loadGitalk()
+  }
+}</script></div><script defer="defer" id="ribbon" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/canvas-ribbon.min.js" size="150" alpha="0.6" zIndex="-1" mobile="false" data-click="false"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

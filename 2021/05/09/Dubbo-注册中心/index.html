@@ -1,0 +1,275 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Dubbo 注册中心 | 18 度水</title><meta name="keywords" content="Dubbo"><meta name="author" content="18 度水"><meta name="copyright" content="18 度水"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Dubbo 注册中心 Registry注册中心实际上是独立于服务 provider 和 consumer 之外的一个独立进程，而 provider 和 consumer 只是再自己的进程中会有一个注册中心的客户端，Dubbo 中，这个客户端抽象成了 Registry 接口。 不论是服务注册还是服务订阅，都是通过自己维护的 Registry 来实现。 123456789public interfac">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Dubbo 注册中心">
+<meta property="og:url" content="http://hanelalo.github.io/2021/05/09/Dubbo-%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83/index.html">
+<meta property="og:site_name" content="18 度水">
+<meta property="og:description" content="Dubbo 注册中心 Registry注册中心实际上是独立于服务 provider 和 consumer 之外的一个独立进程，而 provider 和 consumer 只是再自己的进程中会有一个注册中心的客户端，Dubbo 中，这个客户端抽象成了 Registry 接口。 不论是服务注册还是服务订阅，都是通过自己维护的 Registry 来实现。 123456789public interfac">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://hanelalo.github.io/img/coolHue-CE9FFC-7367F0.png">
+<meta property="article:published_time" content="2021-05-09T11:27:17.000Z">
+<meta property="article:modified_time" content="2021-05-09T11:33:49.745Z">
+<meta property="article:author" content="18 度水">
+<meta property="article:tag" content="Dubbo">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://hanelalo.github.io/img/coolHue-CE9FFC-7367F0.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://hanelalo.github.io/2021/05/09/Dubbo-%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'mediumZoom',
+  Snackbar: undefined,
+  source: {
+    jQuery: 'https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js',
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+    },
+    fancybox: {
+      js: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isanchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = { 
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2021-05-09 19:33:49'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    })(window)</script><meta name="generator" content="Hexo 5.2.0"></head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="author-avatar"><img class="avatar-img" src="/img/avatar.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">39</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">14</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">11</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/blog/"><i class="fa-fw fas fa-book"></i><span> 闲书杂记</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 有关于我</span></a></div><div class="menus_item"><a class="site-page" href="/normal-website"><i class="fa-fw fas fa-atlas"></i><span> 常用网站</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/coolHue-CE9FFC-7367F0.png')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">18 度水</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/blog/"><i class="fa-fw fas fa-book"></i><span> 闲书杂记</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 有关于我</span></a></div><div class="menus_item"><a class="site-page" href="/normal-website"><i class="fa-fw fas fa-atlas"></i><span> 常用网站</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Dubbo 注册中心</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2021-05-09T11:27:17.000Z" title="发表于 2021-05-09 19:27:17">2021-05-09</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2021-05-09T11:33:49.745Z" title="更新于 2021-05-09 19:33:49">2021-05-09</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Dubbo/">Dubbo</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span><span class="post-meta-separator">|</span><span class="post-meta-commentcount"><i class="far fa-comments fa-fw post-meta-icon"></i><span class="post-meta-label">评论数:</span><a href="/2021/05/09/Dubbo-%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83/#post-comment"><span class="gitalk-comment-count"></span></a></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="Dubbo-注册中心"><a href="#Dubbo-注册中心" class="headerlink" title="Dubbo 注册中心"></a>Dubbo 注册中心</h1><p><img src="/img/post/dubbo-registry.png" alt="dubbo 注册中心"></p>
+<h2 id="Registry"><a href="#Registry" class="headerlink" title="Registry"></a>Registry</h2><p>注册中心实际上是独立于服务 provider 和 consumer 之外的一个独立进程，而 provider 和 consumer 只是再自己的进程中会有一个注册中心的客户端，Dubbo 中，这个客户端抽象成了 Registry 接口。</p>
+<p>不论是服务注册还是服务订阅，都是通过自己维护的 Registry 来实现。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Registry</span> <span class="keyword">extends</span> <span class="title">Node</span>, <span class="title">RegistryService</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">default</span> <span class="keyword">void</span> <span class="title">reExportRegister</span><span class="params">(URL url)</span> </span>&#123;</span><br><span class="line">        register(url);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">default</span> <span class="keyword">void</span> <span class="title">reExportUnregister</span><span class="params">(URL url)</span> </span>&#123;</span><br><span class="line">        unregister(url);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="/img/post/Registry.png" alt="Registry 继承关系图"></p>
+<p>Registry 继承了 Node 和 RegistryService。Node 是对注册中心的抽象，也可以是对 Provider 和 Consumer 的抽象。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Node</span> </span>&#123;</span><br><span class="line">	<span class="comment">// 获取节点 URL</span></span><br><span class="line">    <span class="function">URL <span class="title">getUrl</span><span class="params">()</span></span>;</span><br><span class="line">	<span class="comment">// 节点是否可用</span></span><br><span class="line">    <span class="function"><span class="keyword">boolean</span> <span class="title">isAvailable</span><span class="params">()</span></span>;</span><br><span class="line">	<span class="comment">// 销毁</span></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">destroy</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>RegistryService</code> 里面定义了注册、取消注册、订阅、取消订阅等方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">RegistryService</span> </span>&#123;</span><br><span class="line">	<span class="comment">// 通过 URL 注册服务</span></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">register</span><span class="params">(URL url)</span></span>;</span><br><span class="line">	<span class="comment">// 取消注册</span></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">unregister</span><span class="params">(URL url)</span></span>;</span><br><span class="line">	<span class="comment">// 订阅服务</span></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">subscribe</span><span class="params">(URL url, NotifyListener listener)</span></span>;</span><br><span class="line">	<span class="comment">// 取消订阅</span></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">unsubscribe</span><span class="params">(URL url, NotifyListener listener)</span></span>;</span><br><span class="line">	<span class="comment">// 查询符合一定条件的 URL</span></span><br><span class="line">    <span class="function">List&lt;URL&gt; <span class="title">lookup</span><span class="params">(URL url)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>回看前面的 Registry，发现它的两个 default 方法其实是委托给 <code>RegistryService#register</code> 和 <code>RegistryService#unregister</code> 实现的。</p>
+<p><code>Registry</code> 接口提供了一个默认的抽象类实现<code>AbstractRegistry</code>，而具体的子类只需要实现抽象类中的几个方法即可：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">   <span class="comment">// Local disk cache, where the special key value.registries records the list of registry centers, and the others are the list of notified service providers</span></span><br><span class="line">   <span class="keyword">private</span> <span class="keyword">final</span> Properties properties = <span class="keyword">new</span> Properties();</span><br><span class="line">   <span class="comment">// Is it synchronized to save the file</span></span><br><span class="line">   <span class="keyword">private</span> <span class="keyword">boolean</span> syncSaveFile;</span><br><span class="line"><span class="comment">// File cache timing writing</span></span><br><span class="line">   <span class="keyword">private</span> <span class="keyword">final</span> ExecutorService registryCacheExecutor = Executors.newFixedThreadPool(<span class="number">1</span>, <span class="keyword">new</span> NamedThreadFactory(<span class="string">&quot;DubboSaveRegistryCache&quot;</span>, <span class="keyword">true</span>));</span><br><span class="line"><span class="comment">/** 包含创建该 Registry 的所有信息 */</span></span><br><span class="line">   <span class="keyword">private</span> URL registryUrl;</span><br><span class="line">   <span class="comment">// Local disk cache file</span></span><br><span class="line">   <span class="keyword">private</span> File file;</span><br><span class="line"></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="title">AbstractRegistry</span><span class="params">(URL url)</span> </span>&#123;</span><br><span class="line">       setUrl(url);</span><br><span class="line">       <span class="keyword">if</span> (url.getParameter(REGISTRY__LOCAL_FILE_CACHE_ENABLED, <span class="keyword">true</span>)) &#123;</span><br><span class="line">           <span class="comment">// Start file save timer</span></span><br><span class="line">           syncSaveFile = url.getParameter(REGISTRY_FILESAVE_SYNC_KEY, <span class="keyword">false</span>);</span><br><span class="line">           String defaultFilename = System.getProperty(<span class="string">&quot;user.home&quot;</span>) + <span class="string">&quot;/.dubbo/dubbo-registry-&quot;</span> + url.getParameter(APPLICATION_KEY) + <span class="string">&quot;-&quot;</span> + url.getAddress().replaceAll(<span class="string">&quot;:&quot;</span>, <span class="string">&quot;-&quot;</span>) + <span class="string">&quot;.cache&quot;</span>;</span><br><span class="line">           String filename = url.getParameter(FILE_KEY, defaultFilename);</span><br><span class="line">           File file = <span class="keyword">null</span>;</span><br><span class="line">           <span class="keyword">if</span> (ConfigUtils.isNotEmpty(filename)) &#123;</span><br><span class="line">               file = <span class="keyword">new</span> File(filename);</span><br><span class="line">               <span class="keyword">if</span> (!file.exists() &amp;&amp; file.getParentFile() != <span class="keyword">null</span> &amp;&amp; !file.getParentFile().exists()) &#123;</span><br><span class="line">                   <span class="keyword">if</span> (!file.getParentFile().mkdirs()) &#123;</span><br><span class="line">                       <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">&quot;Invalid registry cache file &quot;</span> + file + <span class="string">&quot;, cause: Failed to create directory &quot;</span> + file.getParentFile() + <span class="string">&quot;!&quot;</span>);</span><br><span class="line">                   &#125;</span><br><span class="line">               &#125;</span><br><span class="line">           &#125;</span><br><span class="line">           <span class="keyword">this</span>.file = file;</span><br><span class="line">           <span class="comment">// When starting the subscription center,</span></span><br><span class="line">           <span class="comment">// we need to read the local cache file for future Registry fault tolerance processing.</span></span><br><span class="line">           loadProperties();</span><br><span class="line">           notify(url.getBackupUrls());</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p><code>properties</code> </p>
+<p>是维护在内存中的配置键值对，主要是暴露或者订阅的接口相关的描述信息，本地保留一份注册信息的缓存快照，其实是为了降低注册中心的访问压力。</p>
+</li>
+<li><p><code>file</code>  </p>
+<p><code>properties</code> 在磁盘上的文件对象</p>
+</li>
+<li><p><code>syncSaveFile</code></p>
+<p><code>properties</code> 是否要同步保存到磁盘上</p>
+</li>
+<li><p><code>registryCacheExecutor</code></p>
+<p>从名称上看是注册中心缓存的 Executor，其实就是拿来保存 <code>properties</code> 到磁盘上的只用一个线程的线程池，只不过是当 <code>syncSaveFile</code> 为 <code>false</code> 时才会有用。</p>
+</li>
+<li><p><code>registryUrl</code></p>
+<p>包含创建该 <code>Registry</code> 的所有信息。</p>
+</li>
+</ul>
+<p>观察 <code>AbstractRegistry</code> 的 <code>register()</code>、<code>unregister()</code>、<code>subscribe()</code>、<code>unsubscribe()</code> 四个方法，发现这里面并没有做和真实的注册中心进程交互的操作，只是维护了自身的数据而已，所以真正的交互操作交给了子类去重写这几个方法来实现。</p>
+<p>各个具体实现的继承关系，发现都继承 <code>AbstracRegistry</code> 的 <code>FailbackRegistry</code> 子类，这个子类的职责是实现通信失败后重试的功能，真正的服务发现功能则是子类实现 <code>FailbackRegistry</code> 里面的 <code>do*()</code> 系列的方法来完成。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">FailbackRegistry</span> <span class="keyword">extends</span> <span class="title">AbstractRegistry</span> </span>&#123;</span><br><span class="line">    <span class="comment">/*  retry task map */</span></span><br><span class="line">    <span class="comment">/** 注册失败的 URL */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> ConcurrentMap&lt;URL, FailedRegisteredTask&gt; failedRegistered = <span class="keyword">new</span> ConcurrentHashMap&lt;URL, FailedRegisteredTask&gt;();</span><br><span class="line">    <span class="comment">/** 取消注册失败的 URL */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> ConcurrentMap&lt;URL, FailedUnregisteredTask&gt; failedUnregistered = <span class="keyword">new</span> ConcurrentHashMap&lt;URL, FailedUnregisteredTask&gt;();</span><br><span class="line">    <span class="comment">/** 订阅失败的 URL */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> ConcurrentMap&lt;Holder, FailedSubscribedTask&gt; failedSubscribed = <span class="keyword">new</span> ConcurrentHashMap&lt;Holder, FailedSubscribedTask&gt;();</span><br><span class="line">    <span class="comment">/** 取消订阅失败的 URL */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> ConcurrentMap&lt;Holder, FailedUnsubscribedTask&gt; failedUnsubscribed = <span class="keyword">new</span> ConcurrentHashMap&lt;Holder, FailedUnsubscribedTask&gt;();</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * The time in milliseconds the retryExecutor will wait</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">int</span> retryPeriod;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Timer for failure retry, regular check if there is a request for failure, and if there is, an unlimited retry</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> HashedWheelTimer retryTimer;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p><code>failedRegistered</code> </p>
+<p>key 是注册失败的 URL，value 是重试任务。</p>
+</li>
+<li><p><code>failedUnregistered</code></p>
+<p>key 是取消注册失败的 URL，value 是重试任务。</p>
+</li>
+<li><p><code>failedSubscribed</code></p>
+<p>key 是订阅失败的 URL，value 是重试任务。</p>
+</li>
+<li><p><code>failedUnsubscribed</code></p>
+<p>key 是取消订阅失败的 URL，value 是重试任务。</p>
+</li>
+<li><p><code>retryPeriod</code></p>
+<p>重试间隔，默认为 5000 毫秒，可以在 URL 中通过 <code>retry.period</code> 配置。</p>
+</li>
+<li><p><code>retryTimer</code></p>
+<p>重试任务的时间论算法实现</p>
+</li>
+</ul>
+<p>原本是还有一个 <code>failedNotifyed</code> 系列的通知重试任务，但是最新的源码中已经删除了，原因见：<a target="_blank" rel="noopener" href="https://github.com/apache/dubbo/pull/6401">remove notification retry task</a></p>
+<h2 id="RegistryFactory"><a href="#RegistryFactory" class="headerlink" title="RegistryFactory"></a>RegistryFactory</h2><p><img src="/img/post/RegistryFactory.png" alt="RegistryFactory 继承结构"></p>
+<p><code>RegistryFactory</code> 是 <code>Registry</code> 的工厂类。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@SPI(&quot;dubbo&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">RegistryFactory</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Adaptive(&#123;&quot;protocol&quot;&#125;)</span></span><br><span class="line">    <span class="function">Registry <span class="title">getRegistry</span><span class="params">(URL url)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>RegistryFacotry</code> 通过 <code>SPI</code> 指定了默认的扩展实现为 <code>dubbo</code>，查看源码重的 SPI 配置文件，其实就是 <code>DubboRegistryFactory</code>。</p>
+<p><code>getRegistry(URL url)</code> 方法又通过 <code>@Adaptive</code> 注解指定通过 URL 中的 <code>protocol</code> 参数来决定使用哪一个扩展实现。</p>
+<p><code>RegistryFactory</code> 也有一个抽象实现类 <code>AbstractRegistryFactory</code>，除此之外还有一个 <code>RegistryFactoryWrapper</code> 包装类直接实现了 <code>RegistryFactory</code> 接口。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">RegistryFactoryWrapper</span> <span class="keyword">implements</span> <span class="title">RegistryFactory</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> RegistryFactory registryFactory;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">RegistryFactoryWrapper</span><span class="params">(RegistryFactory registryFactory)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.registryFactory = registryFactory;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Registry <span class="title">getRegistry</span><span class="params">(URL url)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> ListenerRegistryWrapper(registryFactory.getRegistry(url),</span><br><span class="line">                Collections.unmodifiableList(ExtensionLoader.getExtensionLoader(RegistryServiceListener.class)</span><br><span class="line">                        .getActivateExtension(url, <span class="string">&quot;registry.listeners&quot;</span>)));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>构造函数传入的依然是一个 <code>RegistryFactory</code> 的实现，而包装这一层的意义在于，<code>getRegistry()</code> 方法返回的是一个 <code>Registry</code> 的包装类 <code>ListenerRegistryWrapper</code>，它支持通过 <code>RegistryServiceListener</code> 对 <code>Registry</code> 进行事件监听，实际上 <code>RegistryServiceListener</code> 就监听了 <code>register</code>、<code>unregister</code>、<code>subscribe</code>、<code>unsubscribe</code> 四种事件。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@SPI</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">RegistryServiceListener</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">default</span> <span class="keyword">void</span> <span class="title">onRegister</span><span class="params">(URL url)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">default</span> <span class="keyword">void</span> <span class="title">onUnregister</span><span class="params">(URL url)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">default</span> <span class="keyword">void</span> <span class="title">onSubscribe</span><span class="params">(URL url)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">default</span> <span class="keyword">void</span> <span class="title">onUnsubscribe</span><span class="params">(URL url)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>RegistryServiceListener</code> 使用了 <code>SPI</code> 注解，说明它是可以通过 dubbo 的 SPI 机制加载监听器实例的， <code>RegistryFactoryWrapper</code> 中也确实是通过 <code>ExtensionLoader.getExtensionLoader(RegistryServiceListener.class).getActivateExtension(url, &quot;registry.listeners&quot;)</code> 获取监听器实例。</p>
+<p>具体是同可以参考源码中 <code>RegistryFactoryWrapperTest</code> 测试类。</p>
+<blockquote>
+<p>注册和订阅的过程，下次一定！！！</p>
+</blockquote>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">18 度水</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://hanelalo.github.io/2021/05/09/Dubbo-%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83/">http://hanelalo.github.io/2021/05/09/Dubbo-%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://hanelalo.github.io" target="_blank">18 度水</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Dubbo/">Dubbo</a></div><div class="post_share"><div class="social-share" data-image="/img/coolHue-CE9FFC-7367F0.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2021/05/11/Duboo%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E5%92%8C%E8%AE%A2%E9%98%85/"><img class="prev-cover" src="/img/coolHue-5EFCE8-736EFE.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">Duboo服务注册和订阅</div></div></a></div><div class="next-post pull-right"><a href="/2021/05/09/URL%EF%BC%8CDubbo%E7%9A%84%E9%80%9A%E7%94%A8%E5%A5%91%E7%BA%A6/"><img class="next-cover" src="/img/coolHue-5EFCE8-736EFE.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">URL，Dubbo的通用契约</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span> 相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2021/05/19/Dubbo入门/" title="Dubbo入门"><img class="cover" src="/img/coolHue-43CBFF-9708CC.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-05-19</div><div class="title">Dubbo入门</div></div></a></div><div><a href="/2021/05/09/URL，Dubbo的通用契约/" title="URL，Dubbo的通用契约"><img class="cover" src="/img/coolHue-5EFCE8-736EFE.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-05-09</div><div class="title">URL，Dubbo的通用契约</div></div></a></div><div><a href="/2021/05/16/注册中心重试机制/" title="注册中心重试机制"><img class="cover" src="/img/coolHue-5EFCE8-736EFE.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-05-16</div><div class="title">注册中心重试机制</div></div></a></div><div><a href="/2021/05/21/Dubbo-SPI机制/" title="Dubbo SPI 机制"><img class="cover" src="/img/coolHue-5EFCE8-736EFE.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-05-21</div><div class="title">Dubbo SPI 机制</div></div></a></div><div><a href="/2021/05/11/Duboo服务注册和订阅/" title="Duboo服务注册和订阅"><img class="cover" src="/img/coolHue-5EFCE8-736EFE.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-05-11</div><div class="title">Duboo服务注册和订阅</div></div></a></div><div><a href="/2021/04/29/简单实现一个-RPC-框架/" title="简单实现一个 RPC 框架"><img class="cover" src="/img/coolHue-43CBFF-9708CC.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-04-29</div><div class="title">简单实现一个 RPC 框架</div></div></a></div></div></div><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="gitalk-container"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="card-info-avatar is-center"><img class="avatar-img" src="/img/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/><div class="author-info__name">18 度水</div><div class="author-info__description">You are always my hero</div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">39</div></a></div><div class="card-info-data-item is-center"><a href="/tags/"><div class="headline">标签</div><div class="length-num">14</div></a></div><div class="card-info-data-item is-center"><a href="/categories/"><div class="headline">分类</div><div class="length-num">11</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/hanelalo"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/hanelalo" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:hanelalo@163.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">三十功名尘与土，八百里路云和月</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Dubbo-%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83"><span class="toc-number">1.</span> <span class="toc-text">Dubbo 注册中心</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Registry"><span class="toc-number">1.1.</span> <span class="toc-text">Registry</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RegistryFactory"><span class="toc-number">1.2.</span> <span class="toc-text">RegistryFactory</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2021/05/21/Dubbo-SPI%E6%9C%BA%E5%88%B6/" title="Dubbo SPI 机制"><img src="/img/coolHue-5EFCE8-736EFE.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Dubbo SPI 机制"/></a><div class="content"><a class="title" href="/2021/05/21/Dubbo-SPI%E6%9C%BA%E5%88%B6/" title="Dubbo SPI 机制">Dubbo SPI 机制</a><time datetime="2021-05-21T14:59:40.000Z" title="发表于 2021-05-21 22:59:40">2021-05-21</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/05/19/Dubbo%E5%85%A5%E9%97%A8/" title="Dubbo入门"><img src="/img/coolHue-43CBFF-9708CC.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Dubbo入门"/></a><div class="content"><a class="title" href="/2021/05/19/Dubbo%E5%85%A5%E9%97%A8/" title="Dubbo入门">Dubbo入门</a><time datetime="2021-05-19T13:41:25.000Z" title="发表于 2021-05-19 21:41:25">2021-05-19</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/05/16/%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83%E9%87%8D%E8%AF%95%E6%9C%BA%E5%88%B6/" title="注册中心重试机制"><img src="/img/coolHue-5EFCE8-736EFE.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="注册中心重试机制"/></a><div class="content"><a class="title" href="/2021/05/16/%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83%E9%87%8D%E8%AF%95%E6%9C%BA%E5%88%B6/" title="注册中心重试机制">注册中心重试机制</a><time datetime="2021-05-15T16:22:18.000Z" title="发表于 2021-05-16 00:22:18">2021-05-16</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/05/11/Duboo%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E5%92%8C%E8%AE%A2%E9%98%85/" title="Duboo服务注册和订阅"><img src="/img/coolHue-5EFCE8-736EFE.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Duboo服务注册和订阅"/></a><div class="content"><a class="title" href="/2021/05/11/Duboo%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E5%92%8C%E8%AE%A2%E9%98%85/" title="Duboo服务注册和订阅">Duboo服务注册和订阅</a><time datetime="2021-05-11T15:36:06.000Z" title="发表于 2021-05-11 23:36:06">2021-05-11</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/05/09/Dubbo-%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83/" title="Dubbo 注册中心"><img src="/img/coolHue-CE9FFC-7367F0.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Dubbo 注册中心"/></a><div class="content"><a class="title" href="/2021/05/09/Dubbo-%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83/" title="Dubbo 注册中心">Dubbo 注册中心</a><time datetime="2021-05-09T11:27:17.000Z" title="发表于 2021-05-09 19:27:17">2021-05-09</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2021 By 18 度水</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div></div><hr/><div id="local-search-results"></div><span class="search-close-button"><i class="fas fa-times"></i></span></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/medium-zoom/dist/medium-zoom.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page/instantpage.min.js" type="module"></script><script src="/js/search/local-search.js"></script><script>var preloader = {
+  endLoading: () => {
+    document.body.style.overflow = 'auto';
+    document.getElementById('loading-box').classList.add("loaded")
+  },
+  initLoading: () => {
+    document.body.style.overflow = '';
+    document.getElementById('loading-box').classList.remove("loaded")
+
+  }
+}
+window.addEventListener('load',preloader.endLoading())</script><div class="js-pjax"><script>function addGitalkSource () {
+  const ele = document.createElement('link')
+  ele.rel = 'stylesheet'
+  ele.href= 'https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.css'
+  document.getElementsByTagName('head')[0].appendChild(ele)
+}
+
+function loadGitalk () {
+  function initGitalk () {
+    var gitalk = new Gitalk({
+      clientID: 'ec5e809ca88a190ced34',
+      clientSecret: 'c33db042d9bf6ecb888ace6be89e85077132dd7f',
+      repo: 'comment-github',
+      owner: 'hanelalo',
+      admin: ['hanelalo'],
+      id: '018af360e00f5d94679c3414e555cac9',
+      language: 'zh-CN',
+      perPage: 10,
+      distractionFreeMode: false,
+      pagerDirection: 'last',
+      createIssueManually: false,
+      updateCountCallback: commentCount
+    })
+    gitalk.render('gitalk-container')
+  }
+
+  if (typeof Gitalk === 'function') initGitalk()
+  else {
+    addGitalkSource()
+    getScript('https://cdn.jsdelivr.net/npm/gitalk@latest/dist/gitalk.min.js').then(initGitalk)
+  }
+}
+
+function commentCount(n){
+  let isCommentCount = document.querySelector('#post-meta .gitalk-comment-count')
+  if (isCommentCount) {
+    isCommentCount.innerHTML= n
+  }
+}
+
+if ('Gitalk' === 'Gitalk' || !false) {
+  if (false) btf.loadComment(document.getElementById('gitalk-container'), loadGitalk)
+  else loadGitalk()
+} else {
+  function loadOtherComment () {
+    loadGitalk()
+  }
+}</script></div><script defer="defer" id="ribbon" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/canvas-ribbon.min.js" size="150" alpha="0.6" zIndex="-1" mobile="false" data-click="false"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

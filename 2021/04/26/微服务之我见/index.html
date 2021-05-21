@@ -1,0 +1,239 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>微服务之我见 | 18 度水</title><meta name="keywords" content="微服务"><meta name="author" content="18 度水"><meta name="copyright" content="18 度水"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="微服务之我见 本来是想记一下 dubbo 学习笔记的，不知道为什么写了一个晚上，写的全是个人对微服务的理解。  为什么需要微服务？ 在后端这个方向发展到让人惊呼内卷的时代，后端架构已经经历了好几次变革，从单体应用到微服务应用，再到我看明白了一些的 Service Mesh，再到我还没看明白 Serverless，就离谱。  在互联网的泡沫还没到来时，那时甚至很多人都还在断网状态，也没有什么双十一（">
+<meta property="og:type" content="article">
+<meta property="og:title" content="微服务之我见">
+<meta property="og:url" content="http://hanelalo.github.io/2021/04/26/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E4%B9%8B%E6%88%91%E8%A7%81/index.html">
+<meta property="og:site_name" content="18 度水">
+<meta property="og:description" content="微服务之我见 本来是想记一下 dubbo 学习笔记的，不知道为什么写了一个晚上，写的全是个人对微服务的理解。  为什么需要微服务？ 在后端这个方向发展到让人惊呼内卷的时代，后端架构已经经历了好几次变革，从单体应用到微服务应用，再到我看明白了一些的 Service Mesh，再到我还没看明白 Serverless，就离谱。  在互联网的泡沫还没到来时，那时甚至很多人都还在断网状态，也没有什么双十一（">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://hanelalo.github.io/img/coolHue-90F7EC-32CCBC.png">
+<meta property="article:published_time" content="2021-04-26T15:27:55.000Z">
+<meta property="article:modified_time" content="2021-04-26T15:28:38.645Z">
+<meta property="article:author" content="18 度水">
+<meta property="article:tag" content="微服务">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://hanelalo.github.io/img/coolHue-90F7EC-32CCBC.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://hanelalo.github.io/2021/04/26/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E4%B9%8B%E6%88%91%E8%A7%81/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'mediumZoom',
+  Snackbar: undefined,
+  source: {
+    jQuery: 'https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js',
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+    },
+    fancybox: {
+      js: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isanchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = { 
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2021-04-26 23:28:38'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    })(window)</script><meta name="generator" content="Hexo 5.2.0"></head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="author-avatar"><img class="avatar-img" src="/img/avatar.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">39</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">14</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">11</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/blog/"><i class="fa-fw fas fa-book"></i><span> 闲书杂记</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 有关于我</span></a></div><div class="menus_item"><a class="site-page" href="/normal-website"><i class="fa-fw fas fa-atlas"></i><span> 常用网站</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/coolHue-90F7EC-32CCBC.png')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">18 度水</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/blog/"><i class="fa-fw fas fa-book"></i><span> 闲书杂记</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 有关于我</span></a></div><div class="menus_item"><a class="site-page" href="/normal-website"><i class="fa-fw fas fa-atlas"></i><span> 常用网站</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">微服务之我见</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2021-04-26T15:27:55.000Z" title="发表于 2021-04-26 23:27:55">2021-04-26</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2021-04-26T15:28:38.645Z" title="更新于 2021-04-26 23:28:38">2021-04-26</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E5%BE%AE%E6%9C%8D%E5%8A%A1/">微服务</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span><span class="post-meta-separator">|</span><span class="post-meta-commentcount"><i class="far fa-comments fa-fw post-meta-icon"></i><span class="post-meta-label">评论数:</span><a href="/2021/04/26/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E4%B9%8B%E6%88%91%E8%A7%81/#post-comment"><span class="gitalk-comment-count"></span></a></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="微服务之我见"><a href="#微服务之我见" class="headerlink" title="微服务之我见"></a>微服务之我见</h1><blockquote>
+<p>本来是想记一下 dubbo 学习笔记的，不知道为什么写了一个晚上，写的全是个人对微服务的理解。</p>
+</blockquote>
+<h2 id="为什么需要微服务？"><a href="#为什么需要微服务？" class="headerlink" title="为什么需要微服务？"></a>为什么需要微服务？</h2><blockquote>
+<p>在后端这个方向发展到让人惊呼内卷的时代，后端架构已经经历了好几次变革，从单体应用到微服务应用，再到我看明白了一些的 Service Mesh，再到我还没看明白 Serverless，就离谱。</p>
+</blockquote>
+<p>在互联网的泡沫还没到来时，那时甚至很多人都还在断网状态，也没有什么双十一（可能是我不知道），网站基本上都没什么高并发这种东西，一般都是直接一个应用直接打包放到 Tomcat 或者 Jboss 等服务器上跑，不管是点餐、支付、订单查询，全都一股脑放到一个应用程序里面，姑且叫做青铜时代。</p>
+<p>后来，可能时流量稍微多了些，终于，一台服务器撑不住了，就一个应用多部署几个实例，然后找个 Nginx 做负载均衡，又能勉强度日，算是进入白银时代。</p>
+<p>慢慢的，诶，越来越多的人联网了，互联网的黄金时代来了，然后网站瞬间就炸了，因为点餐、支付、查询这些操作都在一个应用里面，当访问人数巨多的时候，多个实例一个接一个的挂，一夜直接破产，在思考良久之后，终于又想到了一个问题，我点餐挂了就算了，我不点餐，我查询总可以吧，但是查询也跟着点餐一起挂了，就不合适，那就尝试把这两个功能做成两个应用吧，算了，顺便直接把支付也拆成一个应用，终于，有点微服务那味道了。</p>
+<p>从上面一大片废话可以总结出：</p>
+<p>其实微服务只是业务发展，导致业务的流量直线上升助推架构发展的必然结果，我觉得除了带来清晰开发团队职责划分（话是这么说，想想其实就是个屁）之外，还保证了整个业务体系的可用性，至少不会再出现点餐功能不可用的同时，查询都不可以的情况，再一个就是，从分布式的角度出发，就整个微服务应用的视角来看，比单体或者分布式单体应用更能抗住高并发。</p>
+<p>说了这么多，那么微服务就是和所有场景吗，它就是互联网黄金时代初期，所有场景的最终答案吗？</p>
+<p>其实并不是，在文章最开始就讲过，微服务本质上是分布式应用，既然是分布式，那就必定受 CAP 魔咒的约束，况且不管是选择 CP 还是 AP，都逃不开应用之间网络调用带来的延迟问题，所以在一些对网络要求极高极高的场景，微服务还是不行的，比如王者荣耀，比如 LOL，打过游戏的都知道，但凡延迟达到 100ms，就是 PPT 级别的效果，到 70ms 的样子勉强能玩，职业选手觉得 30ms 都有点卡，可见这种场景的低延迟要求之变态，这个时候要是还玩微服务，那基本就凉了。</p>
+<p>换个角度讲，其实也没必要上来就搞微服务，从前面的废话里面可以发现，应用架构的演进其实是跟随业务的发展的，如果本身就只有几十上百的流量，这个时候搞微服务就是多此一举，更多的应用其实是一开始都是单体的，然后再慢慢演进成微服务应用。</p>
+<h2 id="关于服务拆分"><a href="#关于服务拆分" class="headerlink" title="关于服务拆分"></a>关于服务拆分</h2><p>前文大概讲了讲架构演进，但是一直都只提到要做微服务，但是从来没提怎么做，换个提问方式就是，如果一个单体应用要拆分为微服务应用，要怎么拆，拆成几个微服务？</p>
+<p>先不回答这个问题，先讲另一个故事，就瞎写。</p>
+<p>在后端架构体系发展的过程中，代码的艺术也在发展，Java 是一门面向对象的语言，大家都这样说，但是在 MVC 的开发模式下，硬生生写成了像 bash 脚本一样的脚本语言。</p>
+<p>后来有人发现，MVC 模式下，业务操作其实就是 Service 里面那段代码，后来发现简单点总结就是 a 在 b 情况下对 c 做了 d 这件事，这样的勉强叫做一个<strong>用户故事</strong>，而 d 这件事，其实就是真正的业务了，既然使用的事 Java 这种面向对象的语言，那能不能摈弃脚本式的开发，让业务操作通过对象真正体现它的业务意义，就像最开始学习 Java 的时候，讲到动物这种对象的时候，说动物吃了 1 斤食物，它的体重也上涨 1 斤，这个时候老师教我们的不是直接 <code>animal.setWeight(animal.getWeight+1)</code>，而是像下面这样：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Animal</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> weight;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Animal</span><span class="params">(<span class="keyword">int</span> weight)</span></span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.weight = weight;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">eat</span><span class="params">(<span class="keyword">int</span> food)</span></span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.weight += food;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span>&#123;</span><br><span class="line">    Animal animal = <span class="keyword">new</span> Animal(<span class="number">10</span>);</span><br><span class="line">    animal.eat(<span class="number">1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这个时候，真正的体现了吃东西时 Animal 这个对象本身所具有的行为，把吃东西这个动作通过 <code>animal.eat()</code> 这个方法来体现了，而不是干瘪的提供一个 <code>setXxx</code> 方法，让任何操作都可以操作 Animal 内部的数据。</p>
+<p>普通的业务操作其实也可以像上面一样，抽象成某个对象的一种行为。</p>
+<p>再进一步思考，发现我可能这个业务在实现的时候，要操作的不只是一个类，可能有多个对象，比如可能我下单的同时，此时就看是不是可以把有些对象的行为的调用这个职责，又放到某个对象里面，等等，那这个对象是什么？</p>
+<p>还记得前面说到的用户故事吗？</p>
+<p>会 发现，每个用户故事里面似乎都会存在一个被操作的对象，那么这个对象，就可以抽象成为一个包揽了所有操作的那个大对象。</p>
+<p>找到了大对象之后，再想象下面的场景，当你要操作一个订单的时候，首先必须要找到这个订单，此时必定总会通过订单号去找，总不能通过订单里面的商品去找吧，那找出来的单子可就不止一个了，所以此时可以把类似订单号这种唯一性标识当作这个大对象的 id。</p>
+<p>此时，这个大对象对外暴露的方法不再是单纯的 getXxx 和 setXxx，而是有着业务命名示意的业务操作函数，终于从 MVC 的模式逃脱出来，发挥了 Java 面向对象的特性。</p>
+<p>上面是针对单个业务来讲的，加入我原来有一个下单得业务了，得到了 Order 这样一个大对象，现在新增一些场景，网站需要用户吧，我总得有注册和登陆吧，我要是买了东西，那我总得寄快递，那总得给一个窗口让交易双方都能看见快递物流吧，这些场景，太多了，这个时候，如果还是把这些职责全部放在 Order 上，那势必会和下单应用部署在一起，那下单挂了，物流、登陆注册也就跟着一起没了，又回到青铜时代，所以这个时候，还得继续拆分，将物流和登陆注册拆分出去，此时有三个微服务了，物流、下单、用户，这三个微服务，都有自己的大对象，比如 Logistics、Order、Customer 等等，这个时候，又有问题了，既然分了三个微服务，那么每个微服务得数据，得存储吧，那我下单服务能直接动用户服务里边得东西吗？不行啊，这是一个从面向对象设计上就无法理解得东西，明明有 Customer 这样一个对象提供了各种操作，为什么 Order 要直接动数据库里面得用户数据，那还要用户服务干啥？</p>
+<p>诶，这个时候，感觉好像有些概念的划分了，有哪些数据或者对象其实是 Order 的，有哪些是 Customer 的，有那些事 Logistics 的，啧，这样似乎就能明确每个微服务的边界了，这不就拆分成功了吗？</p>
+<p>话说到这里，想想这个过程，其实是基于某个业务场景出发，基于某些业务名词进行对象模型的建立，然后赋予这些模型有业务含义的行为方法，这玩意儿，我理解着，其实就是<strong>领域驱动设计 (DDD) ，</strong>而 Order 这些就对应了<strong>聚合根</strong>的概念，对建立的模型赋予业务含义命名的方法，其实就是为了做到 DDD 要求的统一语言。</p>
+<blockquote>
+<p>太累了，为了直白的反向推导为什么要用 DDD，真的好累。这里推荐 Eric Evans 的《领域驱动设计: 软件核心复杂性应对之道》这本书。</p>
+</blockquote>
+<p>其实 DDD 只是一种思想，诞生时间早于微服务，中间沉寂了几十年，最近这些年微服务盛行，发现 DDD 的思想刚好能解决服务拆分的问题，才又重新火了起来，而 DDD 常常提到的充血模型，我觉得其实不是用不用 DDD 的问题，而是开发的时候没有发挥 Java 特性的问题，所以说充血模型一直存在，只不过 DDD 刚好需要它，而不是 DDD 创造了它，DDD 在微服务解决的问题主要是五福拆分问题，具体写代码的时候，管你充血还是贫血，只要我操作的数据是我自己的就行了，哪怕写成脚本又怎样呢？[狗头保命]</p>
+<h2 id="关于-CQRS"><a href="#关于-CQRS" class="headerlink" title="关于 CQRS"></a>关于 CQRS</h2><p>CQRS，即是<strong>命令查询职责分离</strong>，其实也是在 DDD 模式下对于查询业务的一种解决方案，我的理解就是把查询业务和建立了领域模型的命令式业务（比如下单）分开，因为其实查询业务很少或者根本没有业务，偏激一点甚至可能一个查询业务就是一条复杂点的 SQL 而已，这个时候还非得搞各种建模啥的，就没必要，对于这种业务，直接查即可，在《微服务架构设计》种也有提供解决方案，但是现阶段的实践中，对于 CQRS 的实践做得稀烂。</p>
+<h2 id="领域事件"><a href="#领域事件" class="headerlink" title="领域事件"></a>领域事件</h2><p>其实主要就是，当一个业务操作完成时，可能需要通知其他的应用，可以做某些操作了，这个通知其实就是领域事件了。</p>
+<blockquote>
+<p>题外话，但是这种的一般都是跨服务了，涉及到分布式应用必须要面临的问题，那就是分布式事务，目前分布式事务我了解到的解决方案是使用 Saga 模型。同时可能还需要使用到消息中间件，既然使用到了消息中间件，那就还需要考虑如何保证消息发送成功，如何处理重复消费等问题，就很烦。</p>
+</blockquote>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">18 度水</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://hanelalo.github.io/2021/04/26/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E4%B9%8B%E6%88%91%E8%A7%81/">http://hanelalo.github.io/2021/04/26/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E4%B9%8B%E6%88%91%E8%A7%81/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://hanelalo.github.io" target="_blank">18 度水</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/">微服务</a></div><div class="post_share"><div class="social-share" data-image="/img/coolHue-90F7EC-32CCBC.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2021/04/29/%E7%AE%80%E5%8D%95%E5%AE%9E%E7%8E%B0%E4%B8%80%E4%B8%AA-RPC-%E6%A1%86%E6%9E%B6/"><img class="prev-cover" src="/img/coolHue-43CBFF-9708CC.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">简单实现一个 RPC 框架</div></div></a></div><div class="next-post pull-right"><a href="/2021/04/11/Redis-%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/"><img class="next-cover" src="/img/coolHue-5EFCE8-736EFE.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Redis 分布式锁</div></div></a></div></nav><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="gitalk-container"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="card-info-avatar is-center"><img class="avatar-img" src="/img/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/><div class="author-info__name">18 度水</div><div class="author-info__description">You are always my hero</div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">39</div></a></div><div class="card-info-data-item is-center"><a href="/tags/"><div class="headline">标签</div><div class="length-num">14</div></a></div><div class="card-info-data-item is-center"><a href="/categories/"><div class="headline">分类</div><div class="length-num">11</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/hanelalo"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/hanelalo" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:hanelalo@163.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">三十功名尘与土，八百里路云和月</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%BE%AE%E6%9C%8D%E5%8A%A1%E4%B9%8B%E6%88%91%E8%A7%81"><span class="toc-number">1.</span> <span class="toc-text">微服务之我见</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E9%9C%80%E8%A6%81%E5%BE%AE%E6%9C%8D%E5%8A%A1%EF%BC%9F"><span class="toc-number">1.1.</span> <span class="toc-text">为什么需要微服务？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%B3%E4%BA%8E%E6%9C%8D%E5%8A%A1%E6%8B%86%E5%88%86"><span class="toc-number">1.2.</span> <span class="toc-text">关于服务拆分</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%B3%E4%BA%8E-CQRS"><span class="toc-number">1.3.</span> <span class="toc-text">关于 CQRS</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A2%86%E5%9F%9F%E4%BA%8B%E4%BB%B6"><span class="toc-number">1.4.</span> <span class="toc-text">领域事件</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2021/05/21/Dubbo-SPI%E6%9C%BA%E5%88%B6/" title="Dubbo SPI 机制"><img src="/img/coolHue-5EFCE8-736EFE.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Dubbo SPI 机制"/></a><div class="content"><a class="title" href="/2021/05/21/Dubbo-SPI%E6%9C%BA%E5%88%B6/" title="Dubbo SPI 机制">Dubbo SPI 机制</a><time datetime="2021-05-21T14:59:40.000Z" title="发表于 2021-05-21 22:59:40">2021-05-21</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/05/19/Dubbo%E5%85%A5%E9%97%A8/" title="Dubbo入门"><img src="/img/coolHue-43CBFF-9708CC.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Dubbo入门"/></a><div class="content"><a class="title" href="/2021/05/19/Dubbo%E5%85%A5%E9%97%A8/" title="Dubbo入门">Dubbo入门</a><time datetime="2021-05-19T13:41:25.000Z" title="发表于 2021-05-19 21:41:25">2021-05-19</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/05/16/%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83%E9%87%8D%E8%AF%95%E6%9C%BA%E5%88%B6/" title="注册中心重试机制"><img src="/img/coolHue-5EFCE8-736EFE.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="注册中心重试机制"/></a><div class="content"><a class="title" href="/2021/05/16/%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83%E9%87%8D%E8%AF%95%E6%9C%BA%E5%88%B6/" title="注册中心重试机制">注册中心重试机制</a><time datetime="2021-05-15T16:22:18.000Z" title="发表于 2021-05-16 00:22:18">2021-05-16</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/05/11/Duboo%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E5%92%8C%E8%AE%A2%E9%98%85/" title="Duboo服务注册和订阅"><img src="/img/coolHue-5EFCE8-736EFE.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Duboo服务注册和订阅"/></a><div class="content"><a class="title" href="/2021/05/11/Duboo%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E5%92%8C%E8%AE%A2%E9%98%85/" title="Duboo服务注册和订阅">Duboo服务注册和订阅</a><time datetime="2021-05-11T15:36:06.000Z" title="发表于 2021-05-11 23:36:06">2021-05-11</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/05/09/Dubbo-%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83/" title="Dubbo 注册中心"><img src="/img/coolHue-CE9FFC-7367F0.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Dubbo 注册中心"/></a><div class="content"><a class="title" href="/2021/05/09/Dubbo-%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83/" title="Dubbo 注册中心">Dubbo 注册中心</a><time datetime="2021-05-09T11:27:17.000Z" title="发表于 2021-05-09 19:27:17">2021-05-09</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2021 By 18 度水</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div></div><hr/><div id="local-search-results"></div><span class="search-close-button"><i class="fas fa-times"></i></span></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/medium-zoom/dist/medium-zoom.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page/instantpage.min.js" type="module"></script><script src="/js/search/local-search.js"></script><script>var preloader = {
+  endLoading: () => {
+    document.body.style.overflow = 'auto';
+    document.getElementById('loading-box').classList.add("loaded")
+  },
+  initLoading: () => {
+    document.body.style.overflow = '';
+    document.getElementById('loading-box').classList.remove("loaded")
+
+  }
+}
+window.addEventListener('load',preloader.endLoading())</script><div class="js-pjax"><script>function addGitalkSource () {
+  const ele = document.createElement('link')
+  ele.rel = 'stylesheet'
+  ele.href= 'https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.css'
+  document.getElementsByTagName('head')[0].appendChild(ele)
+}
+
+function loadGitalk () {
+  function initGitalk () {
+    var gitalk = new Gitalk({
+      clientID: 'ec5e809ca88a190ced34',
+      clientSecret: 'c33db042d9bf6ecb888ace6be89e85077132dd7f',
+      repo: 'comment-github',
+      owner: 'hanelalo',
+      admin: ['hanelalo'],
+      id: 'd5ed938c6c716ea24179b617de422fdc',
+      language: 'zh-CN',
+      perPage: 10,
+      distractionFreeMode: false,
+      pagerDirection: 'last',
+      createIssueManually: false,
+      updateCountCallback: commentCount
+    })
+    gitalk.render('gitalk-container')
+  }
+
+  if (typeof Gitalk === 'function') initGitalk()
+  else {
+    addGitalkSource()
+    getScript('https://cdn.jsdelivr.net/npm/gitalk@latest/dist/gitalk.min.js').then(initGitalk)
+  }
+}
+
+function commentCount(n){
+  let isCommentCount = document.querySelector('#post-meta .gitalk-comment-count')
+  if (isCommentCount) {
+    isCommentCount.innerHTML= n
+  }
+}
+
+if ('Gitalk' === 'Gitalk' || !false) {
+  if (false) btf.loadComment(document.getElementById('gitalk-container'), loadGitalk)
+  else loadGitalk()
+} else {
+  function loadOtherComment () {
+    loadGitalk()
+  }
+}</script></div><script defer="defer" id="ribbon" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/canvas-ribbon.min.js" size="150" alpha="0.6" zIndex="-1" mobile="false" data-click="false"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
