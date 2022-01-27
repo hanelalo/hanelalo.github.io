@@ -45,3 +45,4 @@ jobs:
         PUBLISH_REPOSITORY: hanelalo/hanelalo.github.io # The repository the action should deploy to.
         BRANCH: gitpages  # The branch the action should deploy to.
         PUBLISH_DIR: ./ # The folder the action should deploy.
+        USER_EMAIL: hanelalo@163.com
