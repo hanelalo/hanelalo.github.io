@@ -15,6 +15,12 @@ cover: https://hanelalo.github.io/images/20220129152458.jpg
 
 ## 连接
 
+### 验证
+
+### 准备
+
+### 解析
+
 ## 初始化
 
 ## 使用
