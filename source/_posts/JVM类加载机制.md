@@ -1,6 +1,6 @@
 ---
 title: JVM类加载机制
-date: 2022-01-29 15:21:40
+date: 2022-03-10 12:21:40
 tags: 
   - JVM
   - 读书笔记
@@ -58,10 +58,37 @@ cover: https://hanelalo.github.io/images/20220129152458.jpg
 
 ### 准备
 
+为 static 字段分配内存，并设置初始零值。final 修饰的字段不会在这里设置，因为 final 修饰的字段在编译时就已经设置了。
+
 ### 解析
+
+将常量池内的符号引用转换为直接引用，如果符号引用指向的类未被加载，就会触发目标类的加载过程。
 
 ## 初始化
 
+执行类的 init()，该方法不用显示定义，是编译器自行收集各属性的赋值动作及静态代码块得到该方法，如果该类有父类，会保证先执行父类 init() 方法，再执行子类 init() 方法。 
+
 ## 使用
 
-## 卸载
+业务代码中调用该类的实例。
+
+# 类加载器
+
+## 类加载器分类
+
+JVM 中的类加载器分为: 
+
+ * BootstrapClassLoader
+    由 C/C++ 实现，本身没有父加载器，它加载 ExtensionClassLoader 和 ApplicationClassLoader，并且是它们的父加载器。
+ * ExtensionClassLoader
+    扩展类加载器，派生自 ClassLoader，从 jre/lib/ext 目录和系统环境变量 java.ext.dirs 配置的目录加载类库。
+ * ApplicationClassLoader
+    应用类加载器，派生自 ClassLoader，从 classpath 和环境变量 java.class.path 指定目录加载类库，Java 应用程序的类都由它加载。通过  `ClassLoader#getSystemClassLoader` 方法可以获得该类加载器。
+ * 自定义类加载器
+    继承 ClassLoader 类，重写 findClass 方法即可，比如 Tomcat 打破双亲委派机制就是通过重写 findClass 方法实现。
+
+## 双亲委派机制
+
+当一个类加载器加载一个类时，首先会尝试让父加载器加载该类，如果父加载器没找到，自己才会尝试加载目标类，也就是说，一般情况下，任何一个类的加载都会轮到 BootstrapClassLoader 尝试加载一次。如果最终还是没能加载到目标类，就会抛出 `ClassNotFoundException`。
+
+
