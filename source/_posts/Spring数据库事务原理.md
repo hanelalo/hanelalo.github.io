@@ -3,7 +3,7 @@ title: Spring数据库事务原理
 date: 2021-11-07 15:37:23
 tags: Spring
 categories: Spring
-cover: https://hanelalo.github.io/images/202111071541201.jpg
+cover: http://image.hanelalo.cn/images/202111071541201.jpg
 ---
 
 # Spring数据库事务原理
@@ -111,7 +111,7 @@ public static void configureAutoProxyCreator(Element element, ParserContext pars
 
 在注册了 InfrastructureAdvisorAutoProxyCreator 之后，就要开始注册一些必要的 BeanDefinition，这里注册了三个 BeanDefinition，分别是 AnnotationTransactionAttributeSource、TransactionInterceptor、TransactionAttributeSourceAdvisor，这里暂且先不细说其作用。仔细观察会发现，TransactionInterceptor 中注入了 AnnotationTransactionAttributeSource，而 TransactionAttributeSourceAdvisor 中把 AnnotationTransactionAttributeSource 和 TransactionInterceptor 都注入了。
 
-![](https://hanelalo.github.io/images/202111072035357.png)
+![](http://image.hanelalo.cn/images/202111072035357.png)
 
 ## TransactionAttributeSourceAdvisor 对 bean 的适用性判断
 

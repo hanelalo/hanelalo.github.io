@@ -2,7 +2,7 @@
 title: 一周随记 No.1
 date: 2021-03-06 17:02:48
 tags: 非正式笔记
-cover: https://hanelalo.github.io/images/202111061346683.png
+cover: http://image.hanelalo.cn/images/202111061346683.png
 ---
 
 # 封装、抽象、继承、多态

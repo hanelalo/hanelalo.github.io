@@ -6,7 +6,7 @@ tags:
   - 读书笔记
   - 深入理解Java虚拟机
 categories: Java虚拟机
-cover: https://hanelalo.github.io/images/20220129152458.jpg
+cover: http://image.hanelalo.cn/images/20220129152458.jpg
 ---
 
 # JVM 类加载机制

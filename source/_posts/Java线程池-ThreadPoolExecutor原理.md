@@ -3,7 +3,7 @@ title: Java线程池-ThreadPoolExecutor原理
 date: 2021-03-12 22:05:36
 tags: Java
 categories: 多线程技术
-cover: https://hanelalo.github.io/images/202111061349153.png
+cover: http://image.hanelalo.cn/images/202111061349153.png
 ---
 
 # ThreadPoolExecutor 原理

@@ -3,7 +3,7 @@ title: Dubbo SPI 机制
 date: 2021-05-21 22:59:40
 tags: Dubbo
 categories: Dubbo
-cover: https://hanelalo.github.io/images/202111061323558.png
+cover: http://image.hanelalo.cn/images/202111061323558.png
 ---
 
 # Dubbo SPI 机制

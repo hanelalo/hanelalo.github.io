@@ -3,7 +3,7 @@ title: URL，Dubbo的通用契约
 date: 2021-05-09 19:26:00
 tags: Dubbo
 categories: Dubbo
-cover: https://hanelalo.github.io/images/202111061356022.png
+cover: http://image.hanelalo.cn/images/202111061356022.png
 ---
 
 # Dubbo 中的 URL

@@ -3,7 +3,7 @@ title: 掘金 Netty 小册学习-简易 IM 实时聊天系统
 date: 2021-03-20 22:47:11
 tags: Netty
 categories: Java
-cover: https://hanelalo.github.io/images/202111061337386.png
+cover: http://image.hanelalo.cn/images/202111061337386.png
 ---
 
 > 本文是在掘金学习[《Netty 入门与实战：仿写微信 IM 即时通讯系统》](https://juejin.cn/book/6844733738119593991/section)时做的笔记，这个小册作为 Netty 入门资料还是不错的。

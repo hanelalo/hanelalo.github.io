@@ -3,7 +3,7 @@ title: MappedFile
 date: 2020-10-06 23:19:21
 tags: RocketMQ
 categories: 消息中间件
-cover: https://hanelalo.github.io/images/202111061350034.png
+cover: http://image.hanelalo.cn/images/202111061350034.png
 ---
 
 # MappedFile

@@ -3,7 +3,7 @@ title: Redis学习笔记（二）
 date: 2021-08-03 14:48:11
 tags: Redis
 categories: Redis
-cover: https://hanelalo.github.io/images/202111061317524.jpg
+cover: http://image.hanelalo.cn/images/202111061317524.jpg
 ---
 
 # Redis 学习笔记（二）

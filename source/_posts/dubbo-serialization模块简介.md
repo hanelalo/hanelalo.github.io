@@ -3,7 +3,7 @@ title: dubbo-serialization模块简介
 date: 2021-07-05 21:56:31
 tags: Dubbo
 categories: Dubbo
-cover: https://hanelalo.github.io/images/202111061322860.png
+cover: http://image.hanelalo.cn/images/202111061322860.png
 ---
 
 dubbo 中专门分了一个 dubbo-serialization 模块，用来承载序列化的工作。

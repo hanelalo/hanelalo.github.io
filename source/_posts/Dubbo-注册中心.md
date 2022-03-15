@@ -3,7 +3,7 @@ title: Dubbo 注册中心
 date: 2021-05-09 19:27:17
 tags: Dubbo
 categories: Dubbo
-cover: https://hanelalo.github.io/images/202111061347425.png
+cover: http://image.hanelalo.cn/images/202111061347425.png
 ---
 
 # Dubbo 注册中心

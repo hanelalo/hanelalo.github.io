@@ -5,7 +5,7 @@ tags:
 	- Java
 	- Redis
 categories: Redis
-cover: https://hanelalo.github.io/images/202111061352025.png
+cover: http://image.hanelalo.cn/images/202111061352025.png
 ---
 
 在分布式应用场景下，总是会涉及到多个应用并发操作同一个业务数据得问题，在这种情况下，就会采用分布式锁来限制并发操作。

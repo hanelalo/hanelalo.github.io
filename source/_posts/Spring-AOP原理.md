@@ -3,7 +3,7 @@ title: Spring-AOP原理
 date: 2021-10-24 10:03:42
 tags: Spring
 categories: Spring
-cover: https://hanelalo.github.io/images/202110241726321.png
+cover: http://image.hanelalo.cn/images/202110241726321.png
 ---
 
 > 图来自 unsplash 
@@ -91,13 +91,13 @@ public class BootStrap {
 
 此时 proxy-target-proxy 属性没有配置，默认是 false，所以此时会使用 Jdk 动态代理的方式生成 TestBeanImpl 的代理类。
 
-![](https://hanelalo.github.io/images/202110241718290.png)
+![](http://image.hanelalo.cn/images/202110241718290.png)
 
 可以看见此时从容器中获取到的 TestBean 的实例是 Jdk 动态代理生成的 Proxy 类型。
 
 接下来把 proxy-target-class 设置为 tue 再运行一次：
 
-![](https://hanelalo.github.io/images/202110241721679.png)
+![](http://image.hanelalo.cn/images/202110241721679.png)
 
 此时会发现变成了 Cglib 代理的实现。
 

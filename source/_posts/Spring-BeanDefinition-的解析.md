@@ -3,7 +3,7 @@ title: 'Spring: BeanDefinition 的解析'
 date: 2021-08-25 23:08:32
 tags: Spring
 categories: Spring
-cover: https://hanelalo.github.io/images/202111061316748.jpg
+cover: http://image.hanelalo.cn/images/202111061316748.jpg
 ---
 
 # Resource 接口

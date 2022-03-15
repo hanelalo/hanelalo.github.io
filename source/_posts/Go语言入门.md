@@ -3,7 +3,7 @@ title: Go语言入门
 date: 2022-01-03 19:56:16
 tags: Go
 categories: Go
-cover: https://hanelalo.github.io/images/202201032000947.png
+cover: http://image.hanelalo.cn/images/202201032000947.png
 ---
 
 # Go 语言入门

@@ -3,7 +3,7 @@ title: Executor框架
 date: 2020-10-17 23:43:55
 tags: Java
 categories: 多线程技术
-cover: https://hanelalo.github.io/images/202111061348509.png
+cover: http://image.hanelalo.cn/images/202111061348509.png
 ---
 
 虽然 Java 提供了手动创建线程的操作方式，但是实际生产环境中，肯定不会允许无限创建线程，因为服务器会炸，所以 JDK 提供了 Exexutor 框架用来管理线程。

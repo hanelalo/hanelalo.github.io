@@ -3,7 +3,7 @@ title: MySQL知识点-1
 date: 2021-03-14 18:40:07
 tags: MySQL
 categories: 数据库
-cover: https://hanelalo.github.io/images/202111061351625.png
+cover: http://image.hanelalo.cn/images/202111061351625.png
 ---
 
 # MySQL 知识点梳理（一）

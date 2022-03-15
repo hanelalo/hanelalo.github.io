@@ -3,7 +3,7 @@ title: volatile 关键字原理
 date: 2021-03-21 16:03:45
 tags: Java
 categories: 多线程技术
-cover: https://hanelalo.github.io/images/202111061357907.png
+cover: http://image.hanelalo.cn/images/202111061357907.png
 ---
 
 > 来自《Java 并发编程的艺术》

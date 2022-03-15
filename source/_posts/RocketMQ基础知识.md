@@ -3,7 +3,7 @@ title: RocketMQ基础知识
 date: 2020-10-06 22:33:28
 tags: RocketMQ
 categories: 消息中间件
-cover: https://hanelalo.github.io/images/202111061353767.png
+cover: http://image.hanelalo.cn/images/202111061353767.png
 ---
 
 # RocketMQ 基础知识

@@ -3,7 +3,7 @@ title: Duboo服务注册和订阅
 date: 2021-05-11 23:36:06
 tags: Dubbo
 category: Dubbo
-cover: https://hanelalo.github.io/images/202111061326845.png
+cover: http://image.hanelalo.cn/images/202111061326845.png
 ---
 
 # 服务注册和订阅

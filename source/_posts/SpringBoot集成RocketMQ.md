@@ -3,7 +3,7 @@ title: SpringBoot集成RocketMQ
 date: 2020-10-06 22:44:30
 tags: RocketMQ
 categories: 消息中间件
-cover: https://hanelalo.github.io/images/202111061355260.png
+cover: http://image.hanelalo.cn/images/202111061355260.png
 ---
 
 # Spring Boot 集成 RocketMQ

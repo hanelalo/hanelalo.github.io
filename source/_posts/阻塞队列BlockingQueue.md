@@ -3,7 +3,7 @@ title: 阻塞队列BlockingQueue
 date: 2021-11-28 22:13:00
 tags: Java
 categories: 多线程技术
-cover: https://hanelalo.github.io/images/202111281136045.png
+cover: http://image.hanelalo.cn/images/202111281136045.png
 ---
 
 # BlockingQueue

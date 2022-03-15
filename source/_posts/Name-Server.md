@@ -3,7 +3,7 @@ title: Name Server
 date: 2020-10-06 23:01:53
 tags: RocketMQ
 categories: 消息中间件
-cover: https://hanelalo.github.io/images/202111061351737.png
+cover: http://image.hanelalo.cn/images/202111061351737.png
 ---
 
 # Name Server

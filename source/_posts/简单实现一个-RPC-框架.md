@@ -3,7 +3,7 @@ title: 简单实现一个 RPC 框架
 date: 2021-04-29 21:46:36
 tags: Dubbo
 categories: Dubbo
-cover: https://hanelalo.github.io/images/202111061312140.png
+cover: http://image.hanelalo.cn/images/202111061312140.png
 ---
 
 # 简单实现一个 RPC 框架

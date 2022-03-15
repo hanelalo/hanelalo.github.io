@@ -3,7 +3,7 @@ title: Java 线程池
 date: 2021-03-09 22:50:07
 tags: Java
 categories: 多线程技术
-cover: https://hanelalo.github.io/images/202111061349789.png
+cover: http://image.hanelalo.cn/images/202111061349789.png
 ---
 
 之前有写过一篇讲 Executor 框架的，最近发现其实讲的不是很清晰，只是介绍了分别有什么特性，而没有真正的使用。

@@ -2,7 +2,7 @@
 title: MySQL 知识点梳理（二）
 date: 2021-12-19 22:42:00
 tags: MySQL
-cover: https://hanelalo.github.io/images/202112192246399.jpeg
+cover: http://image.hanelalo.cn/images/202112192246399.jpeg
 ---
 
 ## InnoDB Buffer Pool

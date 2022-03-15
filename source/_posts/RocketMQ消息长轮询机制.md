@@ -3,7 +3,7 @@ title: RocketMQ消息长轮询机制
 date: 2020-11-14 15:04:13
 tags: RocketMQ
 categories: 消息中间件
-cover: https://hanelalo.github.io/images/202111061354467.png
+cover: http://image.hanelalo.cn/images/202111061354467.png
 ---
 
 # 消息拉取长轮询机制

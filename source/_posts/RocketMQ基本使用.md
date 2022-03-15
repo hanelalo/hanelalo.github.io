@@ -3,7 +3,7 @@ title: RocketMQ基本使用
 date: 2020-10-06 22:36:07
 tags: RocketMQ
 categories: 消息中间件
-cover: https://hanelalo.github.io/images/202111061353729.png
+cover: http://image.hanelalo.cn/images/202111061353729.png
 ---
 
 # RocketMQ 基本使用

@@ -3,7 +3,7 @@ title: Dubbo入门
 date: 2021-05-19 21:41:25
 tags: Dubbo
 categories: Dubbo
-cover: https://hanelalo.github.io/images/202111061324902.png
+cover: http://image.hanelalo.cn/images/202111061324902.png
 ---
 
 # Dubbo 入门
