@@ -1,8 +1,8 @@
 ---
 title: Docker 容器原理浅析
 date: 2022-03-24 12:34:20
-tags: 容器
-categories: 容器
+tags: Kubernetes
+categories: Kubernetes
 cover: http://image.hanelalo.cn/image/2022032412483123.jpg
 ---
 # Docker 容器原理浅析
