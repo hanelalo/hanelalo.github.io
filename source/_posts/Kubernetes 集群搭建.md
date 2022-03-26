@@ -1,21 +1,59 @@
-## master 安装
+---
+title: Kubernetes 集群搭建
+date: 2022-03-26 21:17:20
+tags: Kubernetes
+categories: Kubernetes
+cover: http://image.hanelalo.cn/image/202203262057512.png
+---
 
-使用aliyun的源
+主要是通过 kubeadm 安装，kubeadm 将 k8s 的大部分组件直接以容器的形式进行安装。 
 
-```
-apt-get update && apt-get install -y apt-transport-https
+# 环境准备
 
-curl https://mirrors.aliyun.com/kubernetes/apt/doc/apt-key.gpg | apt-key add -
+* 两台腾讯云服务器
+* 每台服务器 50G 云硬盘
+* 每台服务器 2 核 8G
+* 通外网，两台服务器内网互通
+
+# Master 节点安装
+
+## 安装 kubeadm 和 Docker
+
+安装的时候需要下载一些镜像，众所周知的原因，国内最好使用阿里云的源。
+
+```bash
+$ apt-get update && apt-get install -y apt-transport-https
+
+$ curl https://mirrors.aliyun.com/kubernetes/apt/doc/apt-key.gpg | apt-key add -
  
-cat <<EOF >/etc/apt/sources.list.d/kubernetes.list
+$ cat <<EOF >/etc/apt/sources.list.d/kubernetes.list
 deb https://mirrors.aliyun.com/kubernetes/apt/ kubernetes-xenial main
 EOF
 
-apt-get update
-apt-get install -y docker.io kubeadm
+$ apt-get update
+$ apt-get install -y docker.io kubeadm
 ```
 
-部署脚本 kubeadm.yaml：
+初次之外还需要配置一下 docker 镜像仓库的地址，和一些必要参数，直接编辑 `/etc/docker/daemon.json`：
+
+```json
+{
+  "exec-opts": ["native.cgroupdriver=systemd"],
+  "registry-mirrors": ["https://<yours>.mirror.aliyuncs.com"]
+}
+```
+
+> registry-mirrors 的配置可以到自己的阿里云账号的镜像加速服务下找到。
+
+重启 docker 服务：
+
+```bash
+$ systemctl restart docker
+```
+
+## 开始初始化 master
+
+先写一个部署配置脚本 `kubeadm.yaml`：
 
 ```yaml
 apiVersion: kubeadm.k8s.io/v1beta3
@@ -33,7 +71,7 @@ networking:
   podSubnet: "192.168.0.0/16"
 ```
 
-因为后面网络插件安装遇见了问题，参考https://github.com/flannel-io/flannel/issues/1344，所以加了 networking 配置。
+> 因为后面网络插件安装遇见了问题，参考https://github.com/flannel-io/flannel/issues/1344，所以加了 networking 配置，虽然后面安装的是 calico 网络插件而不是 flannel，但也同样需要这个配置。
 
 然后开始初始化：
 
@@ -41,34 +79,11 @@ networking:
 $ kubeadm init --config kubeadm.yaml
 ```
 
-init 过程中连接 kubelet 报错了：
+> 如果前面没有对 docker 设置 `native.cgroupdriver=systemd` 参数，那么在 init 过程中连接  kubelet 会报错：
+>
+> [kubelet-check] The HTTP call equal to 'curl -sSL http://localhost:10248/healthz' failed with error: Get "http://localhost:10248/healthz": dial tcp 127.0.0.1:10248: connect: connection refused.
 
-```
-[kubelet-check] The HTTP call equal to 'curl -sSL http://localhost:10248/healthz' failed with error: Get "http://localhost:10248/healthz": dial tcp 127.0.0.1:10248: connect: connection refused.
-```
-
-解决办法：
-
-先`kubeadm reset` 清楚一下，不然等会儿重新安装会说有些文件已存在。
-
-编辑 `/etc/docker/daemon.json`:
-
-```json
-{
-  "exec-opts": ["native.cgroupdriver=systemd"],
-  "registry-mirrors": ["https://jen7x4zl.mirror.aliyuncs.com"]
-}
-```
-
-重启docker：
-
-```bash
-$ systemctl restart docker
-```
-
-然后再次执行`kubeadm inti --config kubeadm.yaml`
-
-记录一下必要的日志：
+`kubeadm init` 命令执行完之后，末尾的日志如下：
 
 ```
 [addons] Applied essential addon: CoreDNS
@@ -106,7 +121,7 @@ $ sudo chown $(id -u):$(id -g) $HOME/.kube/config
 
 Kubernetes 集群默认需要加密方式访问。所以，这几条命令，就是将刚刚部署生成的 Kubernetes 集群的安全配置文件，保存到当前用户的.kube 目录下，kubectl 默认会使用这个目录下的授权信息访问 Kubernetes 集群。
 
-
+**最后几行还打出了一个 `kubeadm join` 命令及其参数键值对，这个需要记下来，因为部署 Worker 节点时需要通过这个命令加入集群。**
 
 查看当前唯一的节点的状态：
 
@@ -128,34 +143,22 @@ vm-0-8-ubuntu   NotReady   control-plane,master   4m37s   v1.23.5
 
 ```bash
 root@VM-0-8-ubuntu:/home/ubuntu# kubectl get pods -n kube-system
-NAME                                    READY   STATUS             RESTARTS     AGE
-etcd-vm-0-8-ubuntu                      1/1     Running            0            10m
-kube-apiserver-vm-0-8-ubuntu            1/1     Running            0            10m
-kube-controller-manager-vm-0-8-ubuntu   0/1     CrashLoopBackOff   8 (2s ago)   10m
-kube-scheduler-vm-0-8-ubuntu            1/1     Running            0            10m
 ```
 
-kube-system 是 k8s 预留给系统 pod 的命名空间（非 Linux Namespace），kube-controller-manager 因为依赖网络插件，所以没起起来。
+kube-system 是 k8s 预留给系统 pod 的命名空间（非 Linux Namespace），CoreDNS 因为依赖网络插件，所以没起起来。
+
+## 安装网络插件
 
 安装calico网络插件：
 
+```bash
+$ kubectl create -f https://projectcalico.docs.tigera.io/manifests/tigera-operator.yaml
+$ kubectl create -f https://projectcalico.docs.tigera.io/manifests/custom-resources.yaml
 ```
-kubectl create -f https://projectcalico.docs.tigera.io/manifests/tigera-operator.yaml
-kubectl create -f https://projectcalico.docs.tigera.io/manifests/custom-resources.yaml
 
-```
+# 部署 Worker 节点
 
-
-
-"kubeadm config print init-defaults"这个命令可以告诉我们kubeadm.yaml版本信息。
-
-> 通过 `kubectl logs -p kube-controller-manager-vm-0-8-ubuntu -n kube-system` 查看日志才知道，因为在 kubeadm.yaml 中加了  horizontal-pod-autoscaler-sync-period: "10s"  这个配置项，在当前版本已经被废弃了，导致kube-controller-manager一直起不起来，在 CrashLoopBackOff 状态，将 /etc/kubernetes/manifests/kube-controller-manager.yaml 的上述配置删除即可。
-
-
-
-部署 Worker 节点
-
-安装好 kubeadm 和 docker，然后执行master节点安装好之后日志中的命令：
+安装好 kubeadm 和 docker，然后执行 master 节点安装好之后日志中的命令：
 
 ```bash
 $ kubeadm join 172.30.0.8:6443 --token bhtlzk.hwqr6ix8broo4vr7 \
@@ -173,7 +176,9 @@ vm-0-5-ubuntu   Ready    <none>                 2m7s   v1.23.5
 vm-0-8-ubuntu   Ready    control-plane,master   24m    v1.23.5
 ```
 
-部署容器存储插件
+# 部署容器存储插件
+
+这里选用的是 rook 插件，整体来讲这款插件的各方面功能比较全面。
 
 ```bash
 $ git clone --single-branch --branch v1.8.7 https://github.com/rook/rook.git
@@ -207,7 +212,7 @@ $ kubectl apply -f crds.yaml
 $ kubectl apply -f cluster.yaml
 ```
 
-参考链接：
+# 参考链接：
 
 国内源配置：https://cloud.tencent.com/developer/article/1353427
 
