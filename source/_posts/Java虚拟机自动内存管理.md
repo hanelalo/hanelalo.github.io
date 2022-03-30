@@ -11,7 +11,7 @@ cover: http://image.hanelalo.cn/images/202201182236555.jpg
 
 > 本文是 《深入理解 Java 虚拟机》第 3 版的读书笔记。
 
-## JVM 内存模型
+## JVM 内存区域划分
 
 ### 程序计数器
 
