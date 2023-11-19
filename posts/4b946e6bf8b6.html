@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/img/avatar.jpg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/img/avatar.jpg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/img/avatar.jpg">
+  <link rel="mask-icon" href="/img/avatar.jpg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha256-AbA177XfpSnFEvgpYu1jMygiLabzPCJCRIBtR5jGc0k=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"hanelalo.cn","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.13.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="本文简单介绍了 es 中的一些概念。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Elasticsearch:简介">
+<meta property="og:url" content="http://hanelalo.cn/posts/4b946e6bf8b6">
+<meta property="og:site_name" content="假隐士">
+<meta property="og:description" content="本文简单介绍了 es 中的一些概念。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-06-04T10:24:17.000Z">
+<meta property="article:modified_time" content="2023-11-19T13:53:28.584Z">
+<meta property="article:author" content="假隐士">
+<meta property="article:tag" content="Elasticsearch">
+<meta property="article:tag" content="中间件">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://hanelalo.cn/posts/4b946e6bf8b6.html">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://hanelalo.cn/posts/4b946e6bf8b6","path":"posts/4b946e6bf8b6.html","title":"Elasticsearch:简介"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Elasticsearch:简介 | 假隐士</title>
+  
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="假隐士" type="application/atom+xml">
+<link rel="alternate" href="/rss2.xml" title="假隐士" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">假隐士</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-首页"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-关于我"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于我</a></li><li class="menu-item menu-item-标签"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-分类"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-归档"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li><li class="menu-item menu-item-闲书杂记"><a href="/blog/" rel="section"><i class="fa fa-book fa-fw"></i>闲书杂记</a></li><li class="menu-item menu-item-菜谱"><a href="/cookbook/" rel="section"><i class="fa fa-link fa-fw"></i>菜谱</a></li><li class="menu-item menu-item-常用网站"><a href="/normal-website" rel="section"><i class="fas fa-atlas fa-fw"></i>常用网站</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Elasticsearch-%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">Elasticsearch 简介</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%87%E6%A1%A3%E3%80%81%E7%B4%A2%E5%BC%95"><span class="nav-number">1.1.</span> <span class="nav-text">文档、索引</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E6%9F%A5%E8%AF%A2"><span class="nav-number">1.2.</span> <span class="nav-text">数据查询</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%89%A9%E5%B1%95%E6%80%A7%E3%80%81%E4%BC%B8%E7%BC%A9%E6%80%A7"><span class="nav-number">1.3.</span> <span class="nav-text">扩展性、伸缩性</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%B4%A2%E5%BC%95%E7%9A%84%E5%A4%A7%E5%B0%8F%E3%80%81%E6%80%A7%E8%83%BD"><span class="nav-number">1.3.1.</span> <span class="nav-text">索引的大小、性能</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B7%A8%E9%9B%86%E7%BE%A4%E5%A4%8D%E5%88%B6"><span class="nav-number">1.3.2.</span> <span class="nav-text">跨集群复制</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E6%A1%A3"><span class="nav-number">1.4.</span> <span class="nav-text">参考文档</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="假隐士"
+      src="/img/avatar.jpg">
+  <p class="site-author-name" itemprop="name">假隐士</p>
+  <div class="site-description" itemprop="description">做该做的事，然后接受它的事与愿违。</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">53</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">22</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/hanelalo" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;hanelalo" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+  <a href="https://github.com/hanelalo" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://hanelalo.cn/posts/4b946e6bf8b6">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/img/avatar.jpg">
+      <meta itemprop="name" content="假隐士">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="假隐士">
+      <meta itemprop="description" content="做该做的事，然后接受它的事与愿违。">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Elasticsearch:简介 | 假隐士">
+      <meta itemprop="description" content="本文简单介绍了 es 中的一些概念。">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Elasticsearch:简介
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2023-06-04 10:24:17" itemprop="dateCreated datePublished" datetime="2023-06-04T10:24:17+00:00">2023-06-04</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-11-19 13:53:28" itemprop="dateModified" datetime="2023-11-19T13:53:28+00:00">2023-11-19</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Elasticsearch/" itemprop="url" rel="index"><span itemprop="name">Elasticsearch</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>2.2k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>2 分钟</span>
+    </span>
+</div>
+
+            <div class="post-description">本文简单介绍了 es 中的一些概念。</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="Elasticsearch-简介"><a href="#Elasticsearch-简介" class="headerlink" title="Elasticsearch 简介"></a>Elasticsearch 简介</h1><p>Elasticsearch 是一个分布式的文档存储系统。内部将文档序列化成 JSON 格式进行存储，如果集群中有多个节点，一旦数据被存储，可以从任何一个节点上访问到本存储的数据。</p>
+<p>但是，因为一些内部机制的实现，所以 Elasticsearch 的搜索功能是一个<strong>近实时</strong>的功能，一般在 1 秒内。换句话讲，当数据写到 Elasticsearch 后，可能在 1 秒内还无法查询到。</p>
+<blockquote>
+<p>关于近实时的原因，本系列后续的文章会讲到。</p>
+</blockquote>
+<blockquote>
+<p>在本系列的内容中，<code>es</code>、<code>ES</code> 在无特殊说明情况下，均指 Elasticsearch。</p>
+</blockquote>
+<h2 id="文档、索引"><a href="#文档、索引" class="headerlink" title="文档、索引"></a>文档、索引</h2><p>在 es 中，一条数据可以理解成 MySQL 中的一条数据，每条数据中又包含了很多字段，每个字段有自己的数据类型。</p>
+<p>索引，有两种含义。当用作名词的时候，指的是相同类型的文档的集合，就相当于是 MySQL 中的表；当用作动词时，指的是将文档写入 es，这个过程 es 会建立倒排索引。</p>
+<p>在MySQL 中每个字段都需要指定数据类型，而 es 中则可以选择不指定，而是让 es 自己进行探测，来决定每个字段是什么类型，但是，相同字段在不同文档中，不能是不同的类型。而对于字段类型，也可以自行指定，比如时间的存储格式。这就是每个索引创建时，可以指定的 mappings。</p>
+<p>es 存储文档的时候，不同的字段类型，存储的方式也可能不同，比如 text 类型的字段存储在倒排索引中，而 number、geo 类型则是存储在 BKD 树中。</p>
+<blockquote>
+<p>倒排索引：记录每个单词（es 内部会对字段值做分词）出现过的文档列表。</p>
+<p>BKD 树：说实话，网上找了好几篇文章看，都没看懂原理，大概意思是，能够支持动态数据的多维度搜索，比如像二叉树，其实是一维的搜索，为了支持多维搜索，衍生了 KD 树，但是 KD 树作为树不能自平衡，导致搜索效率低，浪费资源，又整合 B 树，衍生了 KDB 树，但是哪怕发展到了 KDB 树，也依然只支持静态数据的搜索，所以又整合 B+ 树，取二叉树、B 树、B+ 树、KD 树的优点，最后才发展成了 BKD 树，支持动态数据的多维度搜索。</p>
+<p>这里的 D 是 Dimensional 的意思，比如平时说的 3D 的 D 大致就是这个词。</p>
+<p>es 并不是在诞生支持就支持了 BKD 树，Lucene 也是在 6.0 才开始支持 BKD 树。</p>
+</blockquote>
+<h2 id="数据查询"><a href="#数据查询" class="headerlink" title="数据查询"></a>数据查询</h2><p>基于存储时对不同数据类型的存储优化，es 不仅支持类似 MySQL 的针对特定字段的查询，还支持了全文检索。</p>
+<p>es 提供了简单易用的 Restful 风格的 api，但并不是只有查询的 api，读写的 api 都有，还有一些集群状态和工具类型的 api 也可以使用。可以直接在命令行中对 api 发起请求，或者通过 Kibana 发起请求。</p>
+<p>es 的 api 支持结构化检索、全文检索，以及将两者结合在一起的复杂查询。结构化检索可以类比成 MySQL 中的 sql 语句的查询，全文检索则是会检索所有和查询字符串相匹配的文档，并按照文档和检索内容的相关性进行排序返回。</p>
+<p>除了这些，es 还支持短语搜索，比如英文里面的 <code>from..to..</code> 这种短语的搜索，还支持模糊查询、前缀查询。</p>
+<p>对于查询的操作，es 提供了一套完整的 JSON 格式的 DSL 进行查询，甚至还可以直接通过 sql 进行查询。</p>
+<h2 id="扩展性、伸缩性"><a href="#扩展性、伸缩性" class="headerlink" title="扩展性、伸缩性"></a>扩展性、伸缩性</h2><p>es 天生支持分布式存储数据，可以根据需要进行扩展，当往集群中增加 node 时，es 会自动迁移数据到新的节点，让新的节点也分担集群的压力，并且这个过程，不需要重启应用。</p>
+<p>es 中的索引，是一个多对个逻辑分片组成。文档分布在索引的分片中，而分片有分布在不同的节点上，这不仅降低了硬件损坏带来的影响，而且还能通过往集群中增加新的节点来扩大集群的查询容量。当集群增加或减少节点时，es 都会自动的迁移索引的分片，以平衡集群的负载情况。</p>
+<p>es 中的分片，有主分片和副本分片两种。索引中的每个分档都属于某一个主分片，而每个主分片可以有多个副本分片，副本分片一般都和主分片在不同的节点上，这样能进一步防止硬件故障对集群造成影响，并且还能提升集群的查询性能。</p>
+<p>es 中每个索引的主分片数，是在索引创建时就已经确定且再也不能更改的，而副本分片的数量则是随时更改的，并且不会中断读写。</p>
+<h3 id="索引的大小、性能"><a href="#索引的大小、性能" class="headerlink" title="索引的大小、性能"></a>索引的大小、性能</h3><p>分片数量和分片大小，和索引的性能息息相关。分片数量越多，维护这些分片的消耗就越大，而单个分片越大，当 es 集群节点变更需要迁移分片时，所耗费的时间就越多。</p>
+<p>查询大量的小分片，每个分片上的查询速度是比较快的，但分片越多，消耗的资源就越多，因为查询的次数变多了，所以有时候查询少量的大分片可能会更快，所以这个并没有固定是分片越多越好还是越少越好，需要按实际情况进行评估。</p>
+<p>不过官方的建议有 2 个点：</p>
+<ol>
+<li>分片的平均大小建议在几个 G 到几十个 G 之间，对于一些时间序列的数据，通常在 20 到 40 GB。</li>
+<li>要避免大分片，每个节点上的分片数量和堆内存成正比，通常每 GB 的分片数量不超过 20 个。</li>
+</ol>
+<blockquote>
+<p>虽然是建议，但是通常还是应该比建议的标准还要严格些，不要非得节点上挤满了 20 个分片才进行集群扩容。</p>
+</blockquote>
+<h3 id="跨集群复制"><a href="#跨集群复制" class="headerlink" title="跨集群复制"></a>跨集群复制</h3><p>为了保证集群的节点自检有良好稳定的连接，通常会将集群的节点部署在同一个机房。但是，如果集群故障，那么相关的业务将会不可用，所以 es 提供了 CCR（Cross-cluster Replication，跨集群复制）。</p>
+<p>CCR 能够自动同步主机群的索引数据到热备集群，如果主机群故障，热备的集群可以立马接管线上业务。</p>
+<p>主集群可以进行读写操作，而备集群只能进行读操作。</p>
+<h2 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://medium.com/swlh/bkd-trees-used-in-elasticsearch-40e8afd2a1a4">BKD trees, used in Elasticsearch</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.programmersought.com/article/92224903019/">K-D tree, K-D-B tree, B-K-D tree</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Elasticsearch/" rel="tag"># Elasticsearch</a>
+              <a href="/tags/%E4%B8%AD%E9%97%B4%E4%BB%B6/" rel="tag"># 中间件</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/posts/5382e3ced375" rel="prev" title="Spring Cloud Stream RocketMQ入门">
+                  <i class="fa fa-chevron-left"></i> Spring Cloud Stream RocketMQ入门
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/posts/78d5f302f768" rel="next" title="Rust入门:变量和常量">
+                  Rust入门:变量和常量 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="beian"><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">渝ICP备2021012299号-1 </a>
+      <img src="/img/icp.png" alt=""><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=%E6%B8%9D%E5%85%AC%E7%BD%91%E5%AE%89%E5%A4%87%2050023402000631%E5%8F%B7" rel="noopener" target="_blank">渝公网安备 50023402000631号 </a>
+  </div>
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">假隐士</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">450k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">6:49</span>
+  </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/9.1.6/mermaid.min.js","integrity":"sha256-ZfzwelSToHk5YAcr9wbXAmWgyn9Jyq08fSLrLhZE89w="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

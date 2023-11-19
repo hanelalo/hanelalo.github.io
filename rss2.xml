@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0"
+  xmlns:atom="http://www.w3.org/2005/Atom"
+  xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>假隐士</title>
+    <link>http://hanelalo.cn/</link>
+    
+    <image>
+      <url>http://hanelalo.cn/icon.png</url>
+      <title>假隐士</title>
+      <link>http://hanelalo.cn/</link>
+    </image>
+    
+    <atom:link href="http://hanelalo.cn/rss2.xml" rel="self" type="application/rss+xml"/>
+    
+    <description>做该做的事，然后接受它的事与愿违。</description>
+    <pubDate>Sun, 19 Nov 2023 13:53:28 GMT</pubDate>
+    <generator>http://hexo.io/</generator>
+    
+    <item>
+      <title>Flink 入门：Flink 架构</title>
+      <link>http://hanelalo.cn/posts/41f5515b7292</link>
+      <guid>http://hanelalo.cn/posts/41f5515b7292</guid>
+      <pubDate>Sat, 18 Nov 2023 12:55:33 GMT</pubDate>
+      
+      <description>在大数据时代下，为了普通的 OLTP 系统结合离线分析已经无法满足越来越复杂的业务，为了构建一个具备扩展性、高性能的性能，像 Flink 这一类流处理引擎日渐壮大。</description>
+      
+      
+      
+      
+      <category domain="http://hanelalo.cn/categories/Flink/">Flink</category>
+      
+      
+      <category domain="http://hanelalo.cn/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/">大数据</category>
+      
+      
+      <comments>http://hanelalo.cn/posts/41f5515b7292#disqus_thread</comments>
+      
+    </item>
+    
+  </channel>
+</rss>

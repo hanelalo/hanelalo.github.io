@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/img/avatar.jpg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/img/avatar.jpg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/img/avatar.jpg">
+  <link rel="mask-icon" href="/img/avatar.jpg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha256-AbA177XfpSnFEvgpYu1jMygiLabzPCJCRIBtR5jGc0k=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"hanelalo.cn","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.13.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="以 RocketMQ 举例，学习 Spring Cloud Stream。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Spring Cloud Stream RocketMQ入门">
+<meta property="og:url" content="http://hanelalo.cn/posts/5382e3ced375">
+<meta property="og:site_name" content="假隐士">
+<meta property="og:description" content="以 RocketMQ 举例，学习 Spring Cloud Stream。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://image.hanelalo.cn/image/202305281650482.png">
+<meta property="og:image" content="http://image.hanelalo.cn/image/202306040904379.png">
+<meta property="article:published_time" content="2023-05-28T17:39:55.000Z">
+<meta property="article:modified_time" content="2023-11-19T13:53:28.588Z">
+<meta property="article:author" content="假隐士">
+<meta property="article:tag" content="SpringCloud">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://image.hanelalo.cn/image/202305281650482.png">
+
+
+<link rel="canonical" href="http://hanelalo.cn/posts/5382e3ced375.html">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://hanelalo.cn/posts/5382e3ced375","path":"posts/5382e3ced375.html","title":"Spring Cloud Stream RocketMQ入门"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Spring Cloud Stream RocketMQ入门 | 假隐士</title>
+  
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="假隐士" type="application/atom+xml">
+<link rel="alternate" href="/rss2.xml" title="假隐士" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">假隐士</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-首页"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-关于我"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于我</a></li><li class="menu-item menu-item-标签"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-分类"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-归档"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li><li class="menu-item menu-item-闲书杂记"><a href="/blog/" rel="section"><i class="fa fa-book fa-fw"></i>闲书杂记</a></li><li class="menu-item menu-item-菜谱"><a href="/cookbook/" rel="section"><i class="fa fa-link fa-fw"></i>菜谱</a></li><li class="menu-item menu-item-常用网站"><a href="/normal-website" rel="section"><i class="fas fa-atlas fa-fw"></i>常用网站</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Spring-Cloud-Stream"><span class="nav-number">1.</span> <span class="nav-text">Spring Cloud Stream</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Binder"><span class="nav-number">1.1.</span> <span class="nav-text">Binder</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Binding"><span class="nav-number">1.2.</span> <span class="nav-text">Binding</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Spring-Cloud-Stream-RocketMQ"><span class="nav-number">2.</span> <span class="nav-text">Spring Cloud Stream RocketMQ</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%94%9F%E4%BA%A7%E8%80%85"><span class="nav-number">2.1.</span> <span class="nav-text">生产者</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B6%88%E8%B4%B9%E8%80%85"><span class="nav-number">2.2.</span> <span class="nav-text">消费者</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BB%B6%E6%97%B6%E6%B6%88%E6%81%AF"><span class="nav-number">2.3.</span> <span class="nav-text">延时消息</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B6%88%E6%81%AF%E9%87%8D%E8%AF%95"><span class="nav-number">2.4.</span> <span class="nav-text">消息重试</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A1%BA%E5%BA%8F%E6%B6%88%E6%81%AF"><span class="nav-number">2.5.</span> <span class="nav-text">顺序消息</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8B%E5%8A%A1%E6%B6%88%E6%81%AF"><span class="nav-number">2.6.</span> <span class="nav-text">事务消息</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E6%A1%A3"><span class="nav-number">3.</span> <span class="nav-text">参考文档</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="假隐士"
+      src="/img/avatar.jpg">
+  <p class="site-author-name" itemprop="name">假隐士</p>
+  <div class="site-description" itemprop="description">做该做的事，然后接受它的事与愿违。</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">53</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">22</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/hanelalo" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;hanelalo" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+  <a href="https://github.com/hanelalo" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://hanelalo.cn/posts/5382e3ced375">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/img/avatar.jpg">
+      <meta itemprop="name" content="假隐士">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="假隐士">
+      <meta itemprop="description" content="做该做的事，然后接受它的事与愿违。">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Spring Cloud Stream RocketMQ入门 | 假隐士">
+      <meta itemprop="description" content="以 RocketMQ 举例，学习 Spring Cloud Stream。">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Spring Cloud Stream RocketMQ入门
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2023-05-28 17:39:55" itemprop="dateCreated datePublished" datetime="2023-05-28T17:39:55+00:00">2023-05-28</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-11-19 13:53:28" itemprop="dateModified" datetime="2023-11-19T13:53:28+00:00">2023-11-19</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Spring/" itemprop="url" rel="index"><span itemprop="name">Spring</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>11k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>10 分钟</span>
+    </span>
+</div>
+
+            <div class="post-description">以 RocketMQ 举例，学习 Spring Cloud Stream。</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="Spring-Cloud-Stream"><a href="#Spring-Cloud-Stream" class="headerlink" title="Spring Cloud Stream"></a>Spring Cloud Stream</h1><p>Spring Cloud Stream 提出 publish/subscribe、consumer-group、partition 等概念，内部还有 binder、binding 两个核心概念。</p>
+<h2 id="Binder"><a href="#Binder" class="headerlink" title="Binder"></a>Binder</h2><p>用于集成消息中间件，创建各种消息总线对应的 Binding。换句话讲，各个消息总线都有自己的 Binder。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">Binder</span>&lt;T, </span><br><span class="line">			C <span class="keyword">extends</span> <span class="title class_">ConsumerProperties</span>, <span class="comment">// 消费者配置 </span></span><br><span class="line">			P <span class="keyword">extends</span> <span class="title class_">ProducerProperties</span>&gt; &#123; <span class="comment">// 生产者配置</span></span><br><span class="line">  <span class="comment">// 创建消费者 binding</span></span><br><span class="line">	Binding&lt;T&gt; <span class="title function_">bindConsumer</span><span class="params">(String name, String group, T inboundBindTarget,</span></span><br><span class="line"><span class="params">                          C consumerProperties)</span>;</span><br><span class="line">	<span class="comment">// 创建生产者 binding</span></span><br><span class="line">	Binding&lt;T&gt; <span class="title function_">bindProducer</span><span class="params">(String name, T outboundBindTarget, P producerProperties)</span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="Binding"><a href="#Binding" class="headerlink" title="Binding"></a>Binding</h2><p>Binding 包括 input binding 和 output binding。</p>
+<p>Binding 是用于隔离业务代码和具体的消息中间的时间的一层抽象。</p>
+<p><img src="http://image.hanelalo.cn/image/202305281650482.png" alt="binding"></p>
+<h1 id="Spring-Cloud-Stream-RocketMQ"><a href="#Spring-Cloud-Stream-RocketMQ" class="headerlink" title="Spring Cloud Stream RocketMQ"></a>Spring Cloud Stream RocketMQ</h1><h2 id="生产者"><a href="#生产者" class="headerlink" title="生产者"></a>生产者</h2><p>Spring Cloud Stream 本身有一些配置，同时还允许各个消息中间件的 binder、binding 增加自定义扩展配置。</p>
+<p>现在看看一个简单的生产者配置：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">server:</span></span><br><span class="line">  <span class="attr">port:</span> <span class="number">18800</span></span><br><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">application:</span></span><br><span class="line">    <span class="attr">name:</span> <span class="string">rocket-producer</span></span><br><span class="line">  <span class="attr">cloud:</span></span><br><span class="line">    <span class="attr">stream:</span></span><br><span class="line">      <span class="attr">bindings:</span></span><br><span class="line">        <span class="attr">demo-output:</span></span><br><span class="line">          <span class="attr">destination:</span> <span class="string">TEST-TOPIC-01</span></span><br><span class="line">          <span class="attr">content-type:</span> <span class="string">application/json</span></span><br><span class="line">      <span class="attr">rocketmq:</span></span><br><span class="line">        <span class="attr">binder:</span></span><br><span class="line">          <span class="attr">name-server:</span> <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span><span class="string">:9876</span></span><br><span class="line">        <span class="attr">bindings:</span></span><br><span class="line">          <span class="attr">demo-output:</span></span><br><span class="line">            <span class="attr">producer:</span></span><br><span class="line">              <span class="attr">group:</span> <span class="string">test-group</span></span><br><span class="line">              <span class="attr">sync:</span> <span class="literal">true</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>demo-output 是消息通道的名称，destination 则是 topic 的名称。</p>
+</li>
+<li><p><code>spring.cloud.stream.rocketmq</code> 系列的配置，则是 rocketmq 的自定义配置。</p>
+<ul>
+<li><code>spring.cloud.stream.rocketmq.binder.name-server</code> 配置的是 rocketmq name server 的地址。<code>spring.cloud.stream.rocketmq.bindings.demo-output.producer</code> 则是使用 demo-input 这个通道的生产者的专属配置，<code>group</code> 配置项是生产者组配置，<code>sync</code> 配置则是决定发送同步或是异步消息。</li>
+</ul>
+</li>
+</ul>
+<p>然后再看看代码中要如何发送消息。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">OrderEventPublisher</span> &#123;</span><br><span class="line"></span><br><span class="line">    String CHANNEL=<span class="string">&quot;demo-output&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Output(CHANNEL)</span></span><br><span class="line">    MessageChannel <span class="title function_">demoOuput</span><span class="params">()</span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里是使用 <code>@Output</code> 注解使用 demo-output 这个通道，返回的是一个 MessageChannel，后面就可以通过 MessageChannel 来发送消息。需要注意的是，<code>@Output</code> 注解的 value 填写的是在配置文件中声明的通道名称，而不是最终的 topic 的名称。</p>
+<p>然后，还需要将这个接口注册成 Spring Bean，直接使用 <code>@EnableBinding</code> 注解即可，会自动为 OrderEventPublisher 接口创建代理类。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@SpringBootApplication</span></span><br><span class="line"><span class="meta">@EnableBinding(OrderEventPublisher.class)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">RocketMqProducerApplication</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        SpringApplication.run(RocketMqProducerApplication.class, args);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>到这里，已经具备了发送消息的能力，再看看要如何使用 MessageChannel 发送消息。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="meta">@RequestMapping(&quot;order&quot;)</span></span><br><span class="line"><span class="meta">@Slf4j</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">OrderController</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> OrderEventPublisher orderEventPublisher;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@GetMapping(&quot;finish&quot;)</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">finish</span><span class="params">()</span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="type">OrderEvent</span> <span class="variable">event</span> <span class="operator">=</span> OrderEvent.builder()</span><br><span class="line">                .orderId(UUID.randomUUID().toString().replace(<span class="string">&quot;-&quot;</span>, <span class="string">&quot;&quot;</span>))</span><br><span class="line">                .quantity(<span class="number">100L</span>)</span><br><span class="line">                .totalAmount(<span class="number">10000L</span>)</span><br><span class="line">                .type(<span class="string">&quot;realtime&quot;</span>)</span><br><span class="line">                .build();</span><br><span class="line">        MessageBuilder&lt;OrderEvent&gt; builder = MessageBuilder.withPayload(event);</span><br><span class="line">        <span class="type">boolean</span> <span class="variable">send</span> <span class="operator">=</span> orderEventPublisher.demoOuput().send(builder.build());</span><br><span class="line">        log.info(<span class="string">&quot;发送结果：&#123;&#125;&quot;</span>, send);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里定义了一个 Http 接口，调用逻辑就是发送一个 OrderEvent，当构建好 OrderEvent，只需要通过 MessageBuilder 构建一个 Message，然后就能通过 MessageChannel 的 send() 方法进行发送。</p>
+<h2 id="消费者"><a href="#消费者" class="headerlink" title="消费者"></a>消费者</h2><p>消费者配置：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">server:</span></span><br><span class="line">  <span class="attr">port:</span> <span class="string">$&#123;random.int(10000,19999)&#125;</span></span><br><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">application:</span></span><br><span class="line">    <span class="attr">name:</span> <span class="string">rocket-consumer</span></span><br><span class="line">  <span class="attr">cloud:</span></span><br><span class="line">    <span class="attr">stream:</span></span><br><span class="line">      <span class="attr">bindings:</span></span><br><span class="line">        <span class="attr">demo-input:</span></span><br><span class="line">          <span class="attr">destination:</span> <span class="string">TEST-TOPIC-01</span></span><br><span class="line">          <span class="attr">content-type:</span> <span class="string">application/json</span></span><br><span class="line">          <span class="attr">group:</span> <span class="string">CONSUMER-GROUP-02</span></span><br><span class="line">      <span class="attr">rocketmq:</span></span><br><span class="line">        <span class="attr">binder:</span></span><br><span class="line">          <span class="attr">name-server:</span> <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span><span class="string">:9876</span></span><br><span class="line">        <span class="attr">bindings:</span></span><br><span class="line">          <span class="attr">demo-input:</span></span><br><span class="line">            <span class="attr">consumer:</span></span><br><span class="line">              <span class="attr">enable:</span> <span class="literal">true</span></span><br><span class="line">              <span class="attr">broadcasting:</span> <span class="literal">false</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>为了方便模拟多个消费者的集群消费，这里将 <code>server.port</code> 设置成随机的端口。</li>
+<li><code>spring.cloud.stream.bindings</code> 是 Spring Cloud Stream 的配置。<ul>
+<li>demo-input 是定义的通道名称。</li>
+<li>destination 是 topic 名称。</li>
+<li>group 是消费者组的名称。</li>
+</ul>
+</li>
+<li><code>spring.cloud.stream.rockqtmq</code> 是 rocketmq 的自定义配置。<ul>
+<li><code>binder.name-server</code> 指定 rocketmq name server 的地址。</li>
+<li><code>bindings.demo-input.consumer</code> 指定 demo-input 这个消息通道的消费者配置。 <ul>
+<li>enable 表示是否开启消费。</li>
+<li>broadcasting 表示是否广播消费。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>集群消费：一条消息，在一个消费者组中，只能有一个消费者实例进行消费。</p>
+<p>广播消费：一条消息，在一个消费者组中，所有的消费者实例都会消费。</p>
+</blockquote>
+<p>和生产者类似，消费者也需要定义一个接口来使用。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">OrderEventSink</span> &#123;</span><br><span class="line"></span><br><span class="line">    String CHANNEL=<span class="string">&quot;demo-input&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Input(CHANNEL)</span></span><br><span class="line">    SubscribableChannel <span class="title function_">demoInput</span><span class="params">()</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>同样，<code>@Input</code> 注解的 value 也要和配置文件中定义的通道名称一致，而不是和 topic 名称一致。</p>
+<p>然后，还需要增加一个消费的监听器：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="meta">@Slf4j</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">OrderEventConsumer</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@StreamListener(OrderEventSink.CHANNEL)</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">onMessage</span><span class="params">(<span class="meta">@Payload</span> OrderEvent event)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">        log.info(<span class="string">&quot;接收到消息&#123;&#125;&quot;</span>, event);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>监听器通过 <code>@StreamListener</code> 定义，value 填写要监听的消息通道的名称即可，方法参数使用 <code>@Payload</code> 注解表示直接取消息体。</p>
+<p>onMessage() 方法就是消费的逻辑了，如果消费有问题，抛出了异常，则消费失败，在集群消费的模式下，RoacketMQ 会进行重试。</p>
+<p>最后，OrderEventSink 接口也需要通过 <code>@EnableBinding</code> 注解创建代理 bean。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@SpringBootApplication</span></span><br><span class="line"><span class="meta">@EnableBinding(OrderEventSink.class)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">RocketMqConsumerApplication</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        SpringApplication.run(RocketMqConsumerApplication.class, args);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>那么现在将生产者、消费者都启动起来，访问消费者的 <code>/order/finish</code> 接口，消费者端将收到消息：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">2023-05-28 17:38:25.841  INFO 14881 --- [UMER-GROUP-02_1] c.h.rocket.consumer.OrderEventConsumer   : 接收到消息OrderEvent(orderId=af1d50f08d5c46f58cd528baf7959dbb, totalAmount=10000, quantity=100, type=realtime)</span><br></pre></td></tr></table></figure>
+
+<p>到这里已经知道比较常规的使用。</p>
+<h2 id="延时消息"><a href="#延时消息" class="headerlink" title="延时消息"></a>延时消息</h2><p>RocketMQ 支持了 18 个延迟级别，发送延时消息时，并不能自定义延迟的时间，只能指定延迟的级别，每个延迟级别有固定的延时时长。</p>
+<p>延时消息主要是生产方发送时，指定延迟级别，RocketMQ 负责当延迟时间到达时再开放给消费者消费，换句话说，收到的是延时消息还是普通的消息，消费者是无感知的。</p>
+<p>通过 Spring Cloud Stream RocketMQ 发送延迟消息时，因为 Spring Cloud Stream 的 API 是没有直接支持延迟消息的，所以在集成时，Spring Cloud Stream RocketMQ 选则通过 message 的 header 来指定延迟级别。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@GetMapping(&quot;finish/delay&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">finishDelay</span><span class="params">()</span>&#123;</span><br><span class="line">    <span class="type">OrderEvent</span> <span class="variable">event</span> <span class="operator">=</span> OrderEvent.builder()</span><br><span class="line">            .orderId(UUID.randomUUID().toString().replace(<span class="string">&quot;-&quot;</span>, <span class="string">&quot;&quot;</span>))</span><br><span class="line">            .quantity(<span class="number">100L</span>)</span><br><span class="line">            .totalAmount(<span class="number">10000L</span>)</span><br><span class="line">            .type(<span class="string">&quot;delay&quot;</span>)</span><br><span class="line">            .build();</span><br><span class="line">    MessageBuilder&lt;OrderEvent&gt; builder = MessageBuilder.withPayload(event);</span><br><span class="line">    builder.setHeader(MessageConst.PROPERTY_DELAY_TIME_LEVEL, <span class="number">3</span>);</span><br><span class="line">    <span class="type">boolean</span> <span class="variable">send</span> <span class="operator">=</span> orderEventPublisher.demoOuput().send(builder.build());</span><br><span class="line">    log.info(<span class="string">&quot;发送结果：&#123;&#125;&quot;</span>, send);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里是通过 <code>MessageConst.PROPERTY_DELAY_TIME_LEVEL</code> 消息头指定延迟级别，延迟级别 3 对应的延时时长是 10 秒。</p>
+<p>不同级别对应的延迟级别：</p>
+<table>
+<thead>
+<tr>
+<th>延迟级别</th>
+<th>延时时长</th>
+<th>延迟级别</th>
+<th>延时时长</th>
+<th>延迟级别</th>
+<th>延时时长</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>1s</td>
+<td>7</td>
+<td>3m</td>
+<td>13</td>
+<td>9m</td>
+</tr>
+<tr>
+<td>2</td>
+<td>5s</td>
+<td>8</td>
+<td>4m</td>
+<td>14</td>
+<td>10m</td>
+</tr>
+<tr>
+<td>3</td>
+<td>10s</td>
+<td>9</td>
+<td>5m</td>
+<td>15</td>
+<td>20m</td>
+</tr>
+<tr>
+<td>4</td>
+<td>30s</td>
+<td>10</td>
+<td>6m</td>
+<td>16</td>
+<td>30m</td>
+</tr>
+<tr>
+<td>5</td>
+<td>1m</td>
+<td>11</td>
+<td>7m</td>
+<td>17</td>
+<td>1h</td>
+</tr>
+<tr>
+<td>6</td>
+<td>2m</td>
+<td>12</td>
+<td>8m</td>
+<td>18</td>
+<td>2h</td>
+</tr>
+</tbody></table>
+<h2 id="消息重试"><a href="#消息重试" class="headerlink" title="消息重试"></a>消息重试</h2><p>在开始讲消息重试之前，再回顾一下两种消费模式：</p>
+<ul>
+<li>集群消费：同一条消息，一个消费者组中只能有一个消费者实例进行消费。</li>
+<li>广播消费：同一条消息，一个消费者组中所有消费者实例都会进行消费。</li>
+</ul>
+<p>因为这两种消费模式的机制不同，所以消费重试的机制，也只会在集群消费的模式下才会有。</p>
+<p>消息重试，是通过延时消息实现，首次重试的延迟级别是 3，也就是 10 秒，要是再失败，就按延迟级别 4 进行重试，如果延迟级别 18 之后依然没能消费成功，就进入死信队列。</p>
+<p>消费重试，则是在消费者端进行配置。</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">server:</span></span><br><span class="line">  <span class="attr">port:</span> <span class="string">$&#123;random.int(10000,19999)&#125;</span></span><br><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">application:</span></span><br><span class="line">    <span class="attr">name:</span> <span class="string">rocket-consumer</span></span><br><span class="line">  <span class="attr">cloud:</span></span><br><span class="line">    <span class="attr">stream:</span></span><br><span class="line">      <span class="attr">bindings:</span></span><br><span class="line">        <span class="attr">demo-input:</span></span><br><span class="line">          <span class="attr">destination:</span> <span class="string">TEST-TOPIC-01</span></span><br><span class="line">          <span class="attr">content-type:</span> <span class="string">application/json</span></span><br><span class="line">          <span class="attr">group:</span> <span class="string">CONSUMER-GROUP-02</span></span><br><span class="line">          <span class="attr">consumer:</span></span><br><span class="line">            <span class="attr">max-attempts:</span> <span class="number">1</span></span><br><span class="line">      <span class="attr">rocketmq:</span></span><br><span class="line">        <span class="attr">binder:</span></span><br><span class="line">          <span class="attr">name-server:</span> <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span><span class="string">:9876</span></span><br><span class="line">        <span class="attr">bindings:</span></span><br><span class="line">          <span class="attr">demo-input:</span></span><br><span class="line">            <span class="attr">consumer:</span></span><br><span class="line">              <span class="attr">enable:</span> <span class="literal">true</span></span><br><span class="line">              <span class="attr">broadcasting:</span> <span class="literal">false</span></span><br><span class="line">              <span class="attr">push:</span></span><br><span class="line">              	<span class="attr">delay-level-when-next-consume:</span> <span class="number">-1</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>增加了一个 consumer.max-attemps 配置，设置成 1，这是 Spring Cloud Stream 基于 Spring Retry 实现的本地重试，这里设置成  1。</li>
+<li>在 RocketMQ 自定义配置中增加了 <code>delay-level-when-next-consume</code> 配置，这是 RocketMQ 提供的服务端发起的重试机制。如果是 -1，则失败后不重试，直接进入死信队列；如果是 0，则是由 broker 控制重试，即前面提到的从延时级别 3 开始重试；如果大于 0，则是由客户端自行控制重试。</li>
+</ul>
+<p>对于消费异常，Spring Cloud Stream 又提供了针对消费者组的异常处理，以及全局的消费异常处理。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@ServiceActivator(inputChannel = &quot;TEST-TOPIC-01.CONSUMER-GROUP-02.errors&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">handleError</span><span class="params">(ErrorMessage errorMessage)</span> &#123;</span><br><span class="line">    log.error(<span class="string">&quot;[handleError][payload：&#123;&#125;]&quot;</span>, ExceptionUtils.getRootCauseMessage(errorMessage.getPayload()));</span><br><span class="line">    log.error(<span class="string">&quot;[handleError][originalMessage：&#123;&#125;]&quot;</span>, errorMessage.getOriginalMessage());</span><br><span class="line">    log.error(<span class="string">&quot;[handleError][headers：&#123;&#125;]&quot;</span>, errorMessage.getHeaders());</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@StreamListener(IntegrationContextUtils.ERROR_CHANNEL_BEAN_NAME)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">globalErrorHandler</span><span class="params">(ErrorMessage errorMessage)</span>&#123;</span><br><span class="line">    log.error(<span class="string">&quot;[globalHandleError][payload：&#123;&#125;]&quot;</span>, ExceptionUtils.getRootCauseMessage(errorMessage.getPayload()));</span><br><span class="line">    log.error(<span class="string">&quot;[globalHandleError][originalMessage：&#123;&#125;]&quot;</span>, errorMessage.getOriginalMessage());</span><br><span class="line">    log.error(<span class="string">&quot;[globalHandleError][headers：&#123;&#125;]&quot;</span>, errorMessage.getHeaders());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>其中 <code>@ServiceActivator</code> 用于接收指定消费者组的消费异常。</p>
+<p><code>@StreamListener(IntegrationContextUtils.ERROR_CHANNEL_BEAN_NAME)</code> 用于监听全局的异常，这其实和普通的消费一样，只不过全局错误有一个专属的通道而已。</p>
+<h2 id="顺序消息"><a href="#顺序消息" class="headerlink" title="顺序消息"></a>顺序消息</h2><p>顺序消息，RocketMQ 支持分区顺序消息、全局顺序消息两种。</p>
+<p>分区顺序消息，对于指定的 topic 中的消息，通过 sharding key 进行分区，同一个分区内按严格 FIFO 的进行发布、消费。sharding key 是区别于普通消息 key 的字段。RocketMQ 通过将同一个 sharding 分区的消息发送的同一个队列来实现分区顺序消息。</p>
+<p>全局顺序消息，指的是 topic 级别有序，topic 内的所有消息严格遵循 FIFO 的顺序进行发布、消费，这种保证了严格顺序的机制，就需要付出性能的代价，所以也只适用于性能要求不高，但是要求严格 FIFO 的场景。RocketMQ 是在分区顺序消息的基础上进行实现全局顺序消息，可以理解为全局顺序消息其实是通过只有一个消息分区的 topic 实现的，本质上还是分区顺序消息，只不过因为只有 1 个分区，就变成了全局顺序消息。</p>
+<p>要是实现分区顺序消息很简单，只需要生产者将同一类消息发到同一个队列即可。通过增加一个 <code>spring.cloud.stream.bindings.&lt;name&gt;.producer.partition-key-expression</code> 配置来保证同一类消息发送到同一队列。</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">application:</span></span><br><span class="line">    <span class="attr">name:</span> <span class="string">rocket-producer</span></span><br><span class="line">  <span class="attr">cloud:</span></span><br><span class="line">    <span class="attr">stream:</span></span><br><span class="line">      <span class="attr">bindings:</span></span><br><span class="line">        <span class="attr">demo-output:</span></span><br><span class="line">          <span class="attr">destination:</span> <span class="string">TEST-TOPIC-01</span></span><br><span class="line">          <span class="attr">content-type:</span> <span class="string">application/json</span></span><br><span class="line">          <span class="attr">producer:</span></span><br><span class="line">            <span class="attr">partition-key-expression:</span> <span class="string">headers[&#x27;partition&#x27;]</span></span><br></pre></td></tr></table></figure>
+
+<p><code>headers[partition]</code> 意思是取消息头中的 <code>partition</code> 字段作为分片的 sharding key。</p>
+<p>如果要使用消息体中的某个字段作为 sharding key，也可以通过 <code>payload[&#39;id&#39;]</code> 的方式来指定，这里是指定 payload 中的 id 字段作为 sharding key。</p>
+<p>需要注意的是，虽然在实现顺序消息时，生产方将同一种消息放到了同一个分区里面，但如果消费方是多个线程消费，那么就存在消费顺序被打乱的风险。</p>
+<p>因此，一方面，对于广播消费这种模式，其实是天生就不支持顺序消息的，另一方面，如果消费方本身就是异步的消费，就算消息按顺序到达消费方，其实依然还是有乱序的风险。</p>
+<p>所以在消费者的配置上，通过  <code>spring.cloud.stream.rocketmq.bindings.&lt;name&gt;.consumer.push.orderly</code> 控制是否顺序消费，默认是 false，表示并发多线程消费，设置为 true 就是顺序消费。可以看看 <code>RocketMQInboundChannelAdapter#doInit</code> 方法。</p>
+<blockquote>
+<p>Spring Cloud Stream RocketMQ 默认是 Push 模式的消费者，所以配置路径里面还使用了 <code>push</code> 的字样。</p>
+</blockquote>
+<h2 id="事务消息"><a href="#事务消息" class="headerlink" title="事务消息"></a>事务消息</h2><p>事务消息并不是 Spring Cloud Stream 原生支持的，而是 RocketMQ 自己的特殊功能。</p>
+<blockquote>
+<p>下面是从 <a target="_blank" rel="noopener" href="https://rocketmq.apache.org/zh/docs/featureBehavior/04transactionmessage">RoacketMQ 官网：事务消息</a> 扒下来的图：</p>
+<p><img src="http://image.hanelalo.cn/image/202306040904379.png" alt="事务消息"></p>
+<ol>
+<li><p>生产者将消息发送至Apache RocketMQ服务端。</p>
+</li>
+<li><p>Apache RocketMQ服务端将消息持久化成功之后，向生产者返回Ack确认消息已经发送成功，此时消息被标记为”暂不能投递”，这种状态下的消息即为半事务消息。</p>
+</li>
+<li><p>生产者开始执行本地事务逻辑。</p>
+</li>
+<li><p>生产者根据本地事务执行结果向服务端提交二次确认结果（Commit或是Rollback），服务端收到确认结果后处理逻辑如下：</p>
+<ul>
+<li><p>二次确认结果为Commit：服务端将半事务消息标记为可投递，并投递给消费者。</p>
+</li>
+<li><p>二次确认结果为Rollback：服务端将回滚事务，不会将半事务消息投递给消费者。</p>
+</li>
+</ul>
+</li>
+<li><p>在断网或者是生产者应用重启的特殊情况下，若服务端未收到发送者提交的二次确认结果，或服务端收到的二次确认结果为Unknown未知状态，经过固定时间后，服务端将对消息生产者即生产者集群中任一生产者实例发起消息回查。 <strong>说明</strong> 服务端回查的间隔时间和最大回查次数，请参见<a target="_blank" rel="noopener" href="https://rocketmq.apache.org/zh/docs/introduction/03limits">参数限制</a>。</p>
+</li>
+<li><p>生产者收到消息回查后，需要检查对应消息的本地事务执行的最终结果。</p>
+</li>
+<li><p>生产者根据检查到的本地事务的最终状态再次提交二次确认，服务端仍按照步骤4对半事务消息进行处理。</p>
+</li>
+</ol>
+</blockquote>
+<p>从上面的事务消息的发送的步骤来看，这其实和消费者没多大关系，消费端根本感知不到这条消息是不是事务消息，主要还是在生产者进行处理。</p>
+<p>在生产者一方，要发送事务消息，相比之前的配置文件，还需要增加两个配置：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">server:</span></span><br><span class="line">  <span class="attr">port:</span> <span class="number">18800</span></span><br><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">application:</span></span><br><span class="line">    <span class="attr">name:</span> <span class="string">rocket-producer</span></span><br><span class="line">  <span class="attr">cloud:</span></span><br><span class="line">    <span class="attr">stream:</span></span><br><span class="line">      <span class="attr">bindings:</span></span><br><span class="line">        <span class="attr">demo-output:</span></span><br><span class="line">          <span class="attr">destination:</span> <span class="string">TEST-TOPIC-03</span></span><br><span class="line">          <span class="attr">content-type:</span> <span class="string">application/json</span></span><br><span class="line">      <span class="attr">rocketmq:</span></span><br><span class="line">        <span class="attr">binder:</span></span><br><span class="line">          <span class="attr">name-server:</span> <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span><span class="string">:9876</span></span><br><span class="line">        <span class="attr">bindings:</span></span><br><span class="line">          <span class="attr">demo-output:</span></span><br><span class="line">            <span class="attr">producer:</span></span><br><span class="line">              <span class="attr">group:</span> <span class="string">test-group</span></span><br><span class="line">              <span class="attr">sync:</span> <span class="literal">true</span></span><br><span class="line">              <span class="attr">producerType:</span> <span class="string">Trans</span> <span class="comment"># 事务消息</span></span><br><span class="line">              <span class="attr">transactionListener:</span> <span class="string">orderTransactionalListener</span> <span class="comment"># 事务消息监听器</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>spring.cloud.stream.rocketmq.bindings.&lt;name&gt;.producer.producerType</code>，将生产者类型设置为事务消息，默认是 Normal，普通消息。</li>
+<li><code>spring.cloud.stream.rocketmq.bindings.&lt;name&gt;.producer.transactionListener</code>，事务消息监听器，用于执行本地事务和事务回查。</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Component(&quot;orderTransactionalListener&quot;)</span></span><br><span class="line"><span class="meta">@Slf4j</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">OrderTransactionalListener</span> <span class="keyword">implements</span> <span class="title class_">TransactionListener</span> &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> LocalTransactionState <span class="title function_">executeLocalTransaction</span><span class="params">(Message msg, Object arg)</span> &#123;</span><br><span class="line">        log.info(<span class="string">&quot;execute local transaction:&#123;&#125;&quot;</span>, JSON.toJSONString(msg));</span><br><span class="line">        <span class="keyword">return</span> LocalTransactionState.UNKNOW;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> LocalTransactionState <span class="title function_">checkLocalTransaction</span><span class="params">(MessageExt msg)</span> &#123;</span><br><span class="line">        log.info(<span class="string">&quot;消息回查:&#123;&#125;&quot;</span>, JSON.toJSONString(msg));</span><br><span class="line">        <span class="keyword">return</span> LocalTransactionState.COMMIT_MESSAGE;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>这里会首先调用 <code>#executeLocalTransaction</code> 方法执行本地事务，但是返回的是 UNKNOW，所以隔一段时间会调用 <code>#checkLocalTransaction</code> 方法检查本地事务执行状态。</p>
+</blockquote>
+<p>事务消息监听器，需要实现 RocketMQ 提供的 <code>TransactionListener</code> 接口。</p>
+<ul>
+<li><p><code>#executeLocalTransaction</code> 方法用于执行本地事务，返回是的 LocalTransactionState 枚举类型。</p>
+</li>
+<li><p><code>#checkLocalTransaction</code> 方法用于处理事务消息回查，返回的也是 LocalTransactionState 枚举类型。</p>
+</li>
+</ul>
+<p>LocalTransactionState 枚举有 3 个值：</p>
+<ul>
+<li><em>COMMIT_MESSAGE</em>，表示本地事务已提交。</li>
+<li><em>ROLLBACK_MESSAGE</em>，表示本地事务已回滚。</li>
+<li><em>UNKNOW</em>，表示状态还未知。</li>
+</ul>
+<h1 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h1><ul>
+<li><a target="_blank" rel="noopener" href="https://rocketmq.apache.org/zh/docs/featureBehavior/04transactionmessage">事务消息</a></li>
+<li><a target="_blank" rel="noopener" href="https://rocketmq.apache.org/zh/docs/featureBehavior/03fifomessage">顺序消息</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.alibabacloud.com/help/en/message-queue-for-apache-rocketmq/latest/ordered-messages-1-0#section-utp-a6a-u2p">Ordered Messages</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/SpringCloud/" rel="tag"># SpringCloud</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/posts/ee449bbf5714" rel="prev" title="Prompt Engineering">
+                  <i class="fa fa-chevron-left"></i> Prompt Engineering
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/posts/4b946e6bf8b6" rel="next" title="Elasticsearch:简介">
+                  Elasticsearch:简介 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="beian"><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">渝ICP备2021012299号-1 </a>
+      <img src="/img/icp.png" alt=""><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=%E6%B8%9D%E5%85%AC%E7%BD%91%E5%AE%89%E5%A4%87%2050023402000631%E5%8F%B7" rel="noopener" target="_blank">渝公网安备 50023402000631号 </a>
+  </div>
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">假隐士</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">450k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">6:49</span>
+  </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/9.1.6/mermaid.min.js","integrity":"sha256-ZfzwelSToHk5YAcr9wbXAmWgyn9Jyq08fSLrLhZE89w="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

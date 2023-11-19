@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/img/avatar.jpg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/img/avatar.jpg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/img/avatar.jpg">
+  <link rel="mask-icon" href="/img/avatar.jpg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha256-AbA177XfpSnFEvgpYu1jMygiLabzPCJCRIBtR5jGc0k=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"hanelalo.cn","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.13.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="吴恩达的 Prompt Engineering 课程的总结笔记。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Prompt Engineering">
+<meta property="og:url" content="http://hanelalo.cn/posts/ee449bbf5714">
+<meta property="og:site_name" content="假隐士">
+<meta property="og:description" content="吴恩达的 Prompt Engineering 课程的总结笔记。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-05-03T15:46:56.000Z">
+<meta property="article:modified_time" content="2023-11-19T13:53:28.588Z">
+<meta property="article:author" content="假隐士">
+<meta property="article:tag" content="AIGC">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://hanelalo.cn/posts/ee449bbf5714.html">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://hanelalo.cn/posts/ee449bbf5714","path":"posts/ee449bbf5714.html","title":"Prompt Engineering"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Prompt Engineering | 假隐士</title>
+  
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="假隐士" type="application/atom+xml">
+<link rel="alternate" href="/rss2.xml" title="假隐士" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">假隐士</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-首页"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-关于我"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于我</a></li><li class="menu-item menu-item-标签"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-分类"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-归档"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li><li class="menu-item menu-item-闲书杂记"><a href="/blog/" rel="section"><i class="fa fa-book fa-fw"></i>闲书杂记</a></li><li class="menu-item menu-item-菜谱"><a href="/cookbook/" rel="section"><i class="fa fa-link fa-fw"></i>菜谱</a></li><li class="menu-item menu-item-常用网站"><a href="/normal-website" rel="section"><i class="fas fa-atlas fa-fw"></i>常用网站</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%86%99%E5%9C%A8%E5%89%8D%E9%9D%A2"><span class="nav-number">1.</span> <span class="nav-text">写在前面</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Temperature-%E5%8F%82%E6%95%B0"><span class="nav-number">2.</span> <span class="nav-text">Temperature 参数</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E5%87%86%E5%88%99"><span class="nav-number">3.</span> <span class="nav-text">使用准则</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BC%96%E5%86%99%E6%B8%85%E6%99%B0%E8%80%8C%E5%85%B7%E4%BD%93%E7%9A%84%E6%8C%87%E4%BB%A4"><span class="nav-number">3.1.</span> <span class="nav-text">编写清晰而具体的指令</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E5%88%86%E9%9A%94%E7%AC%A6"><span class="nav-number">3.1.1.</span> <span class="nav-text">使用分隔符</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A6%81%E6%B1%82%E6%A8%A1%E5%9E%8B%E8%BF%9B%E8%A1%8C%E7%BB%93%E6%9E%84%E5%8C%96%E7%9A%84%E8%BE%93%E5%87%BA"><span class="nav-number">3.1.2.</span> <span class="nav-text">要求模型进行结构化的输出</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A6%81%E6%B1%82%E6%A8%A1%E5%9E%8B%E6%A3%80%E6%9F%A5%E6%9D%A1%E4%BB%B6%E6%98%AF%E5%90%A6%E5%BE%97%E5%88%B0%E6%BB%A1%E8%B6%B3"><span class="nav-number">3.1.3.</span> <span class="nav-text">要求模型检查条件是否得到满足</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%91%E6%A8%A1%E5%9E%8B%E6%8F%90%E4%BE%9B%E4%B8%80%E4%BA%9B%E6%8F%90%E7%A4%BA%E6%A0%B7%E6%9C%AC"><span class="nav-number">3.1.4.</span> <span class="nav-text">向模型提供一些提示样本</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%99%E4%BA%88%E6%A8%A1%E5%9E%8B%E6%80%9D%E8%80%83%E7%9A%84%E6%97%B6%E9%97%B4"><span class="nav-number">3.2.</span> <span class="nav-text">给予模型思考的时间</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8C%87%E5%AE%9A%E5%AE%8C%E6%88%90%E4%B8%80%E9%A1%B9%E4%BB%BB%E5%8A%A1%E6%89%80%E9%9C%80%E8%A6%81%E7%9A%84%E6%AD%A5%E9%AA%A4"><span class="nav-number">3.2.1.</span> <span class="nav-text">指定完成一项任务所需要的步骤</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9C%A8%E5%BE%97%E5%88%B0%E7%AD%94%E6%A1%88%E5%89%8D%EF%BC%8C%E5%85%88%E8%87%AA%E5%AE%9A%E5%AF%BB%E6%89%BE%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88"><span class="nav-number">3.2.2.</span> <span class="nav-text">在得到答案前，先自定寻找解决方案</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%B1%80%E9%99%90%E6%80%A7"><span class="nav-number">4.</span> <span class="nav-text">模型的局限性</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="假隐士"
+      src="/img/avatar.jpg">
+  <p class="site-author-name" itemprop="name">假隐士</p>
+  <div class="site-description" itemprop="description">做该做的事，然后接受它的事与愿违。</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">53</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">22</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/hanelalo" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;hanelalo" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+  <a href="https://github.com/hanelalo" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://hanelalo.cn/posts/ee449bbf5714">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/img/avatar.jpg">
+      <meta itemprop="name" content="假隐士">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="假隐士">
+      <meta itemprop="description" content="做该做的事，然后接受它的事与愿违。">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Prompt Engineering | 假隐士">
+      <meta itemprop="description" content="吴恩达的 Prompt Engineering 课程的总结笔记。">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Prompt Engineering
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2023-05-03 15:46:56" itemprop="dateCreated datePublished" datetime="2023-05-03T15:46:56+00:00">2023-05-03</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-11-19 13:53:28" itemprop="dateModified" datetime="2023-11-19T13:53:28+00:00">2023-11-19</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Prompt/" itemprop="url" rel="index"><span itemprop="name">Prompt</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>12k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>11 分钟</span>
+    </span>
+</div>
+
+            <div class="post-description">吴恩达的 Prompt Engineering 课程的总结笔记。</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h1><p>本文是学习吴恩达的 Prompt Engineering 课程的总结笔记。</p>
+<p>课程地址：<a target="_blank" rel="noopener" href="https://learn.deeplearning.ai/chatgpt-prompt-eng/lesson/2/guidelines">https://learn.deeplearning.ai/chatgpt-prompt-eng/lesson/2/guidelines</a></p>
+<p>本文提到的实例代码依赖 openai 这个 python 库，所以需要事先进行安装：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">pip install openai</span></span><br></pre></td></tr></table></figure>
+
+<p>另外，还需要设置 openai 的 API Key：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> openai</span><br><span class="line">openai.api_key=<span class="string">&quot;sk-....&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>其中的 API Key 可以点击这个链接获取自己账户的 API Key：<a target="_blank" rel="noopener" href="https://platform.openai.com/account/api-keys">https://platform.openai.com/account/api-keys</a></p>
+<p>另外，本文的代码基本都会包含对以下辅助函数的调用。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">get_completion</span>(<span class="params">prompt, model=<span class="string">&quot;gpt-3.5-turbo&quot;</span></span>): </span><br><span class="line">    messages = [&#123;<span class="string">&quot;role&quot;</span>:<span class="string">&quot;user&quot;</span>,<span class="string">&quot;content&quot;</span>:prompt&#125;]</span><br><span class="line">    response = openai.ChatCompletion.create(</span><br><span class="line">        model=model,</span><br><span class="line">        messages=messages,</span><br><span class="line">        temperature=<span class="number">0</span>,</span><br><span class="line">    )</span><br><span class="line">    <span class="keyword">return</span> response.choices[<span class="number">0</span>].message[<span class="string">&quot;content&quot;</span>]</span><br></pre></td></tr></table></figure>
+
+<p>prompt 就是输入的文本了，model 是使用的模型，这里硬编码成了 gpt-3.5-turbo。</p>
+<p>更多的 api 使用规范参考：<a target="_blank" rel="noopener" href="https://platform.openai.com/docs/api-reference">https://platform.openai.com/docs/api-reference</a></p>
+<h1 id="Temperature-参数"><a href="#Temperature-参数" class="headerlink" title="Temperature 参数"></a>Temperature 参数</h1><p>temperature 参数的取值是 0~2，这个值越高，输出越随机，值越低，输出越稳定。</p>
+<p>同样的 prompt，当 temperature 为 0 时，每次输出的内容基本能够保持一致，但是如果 temperature 是 0.8，或者其他数值时，每次输出的结果可能会不一样。</p>
+<p>所以，如果构建的系统需要保持输出的稳定性，temperature 参数的值建议设置成 0，而如果想让应用更具有创造性，则可以适当调高该参数的值。</p>
+<h1 id="使用准则"><a href="#使用准则" class="headerlink" title="使用准则"></a>使用准则</h1><ul>
+<li>编写清晰而具体的指令。</li>
+<li>给予模型思考的时间。</li>
+</ul>
+<h2 id="编写清晰而具体的指令"><a href="#编写清晰而具体的指令" class="headerlink" title="编写清晰而具体的指令"></a>编写清晰而具体的指令</h2><p>需要注意的是，不要把短的提示词和清晰、具体的提示词混淆，很多时候，更长的提示词能更清晰的描述问题的上下文，让模型能更准确的输出。</p>
+<p>要编写一个清晰、准确的提示词，可以使用以下 4 种策略。</p>
+<h3 id="使用分隔符"><a href="#使用分隔符" class="headerlink" title="使用分隔符"></a>使用分隔符</h3><p>使用分隔符，可以明确指出输入的不同部分。</p>
+<p>比如使用 <code>&quot;&quot;&quot;</code>、`````、<code>&lt;&gt;</code> 、<code>---</code>等。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">text = <span class="string">f&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">You should express what you want a model to do by \ </span></span><br><span class="line"><span class="string">providing instructions that are as clear and \ </span></span><br><span class="line"><span class="string">specific as you can possibly make them. \ </span></span><br><span class="line"><span class="string">This will guide the model towards the desired output, \ </span></span><br><span class="line"><span class="string">and reduce the chances of receiving irrelevant \ </span></span><br><span class="line"><span class="string">or incorrect responses. Don&#x27;t confuse writing a \ </span></span><br><span class="line"><span class="string">clear prompt with writing a short prompt. \ </span></span><br><span class="line"><span class="string">In many cases, longer prompts provide more clarity \ </span></span><br><span class="line"><span class="string">and context for the model, which can lead to \ </span></span><br><span class="line"><span class="string">more detailed and relevant outputs.</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line">prompt = <span class="string">f&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">Summarize the text delimited by triple backticks \ </span></span><br><span class="line"><span class="string">into a single sentence.</span></span><br><span class="line"><span class="string">```<span class="subst">&#123;text&#125;</span>```</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line">response = get_completion(prompt)</span><br><span class="line"><span class="built_in">print</span>(response)</span><br></pre></td></tr></table></figure>
+
+<p>上面的例子中的 prompt 是让 gpt 模型将 <code>中的文本总结成 1 句话，这里使用 </code>作为分隔符，有效的限定了文本的不同部分之间的边界。</p>
+<p>这样做的好处是，可以有效地防止 prompt 注入。举个例子，如果这里没有指定某种符号作为分隔符，那么如果用户输入的 text 的内容是让 gpt 忽略前面的 prompt 内容并写一首关于熊猫的诗，那么整个应用将不会按照预想的逻辑运行。</p>
+<p>总之，使用分隔符的好处是：</p>
+<ol>
+<li>使 prompt 更加清晰，gpt 能更清晰识别 prompt 文本中的不同部分。</li>
+<li>防止 prompt 注入。</li>
+</ol>
+<h3 id="要求模型进行结构化的输出"><a href="#要求模型进行结构化的输出" class="headerlink" title="要求模型进行结构化的输出"></a>要求模型进行结构化的输出</h3><p>可以要求  gpt 输出一个 json、xml，甚至 html。</p>
+<p>举个例子：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">prompt = <span class="string">f&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">Generate  a list of three made-up book title along \</span></span><br><span class="line"><span class="string">with their authors and genres.</span></span><br><span class="line"><span class="string">Provide them in JSON format with the follow key:</span></span><br><span class="line"><span class="string">book_id,title,author,genre.</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line">response = get_completion(prompt)</span><br><span class="line"><span class="built_in">print</span>(response)</span><br></pre></td></tr></table></figure>
+
+<p>Output：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;book1&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;title&quot;</span><span class="punctuation">:</span> <span class="string">&quot;The Lost City of Zorath&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;author&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Aria Blackwood&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;genre&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Fantasy&quot;</span></span><br><span class="line">  <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;book2&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;title&quot;</span><span class="punctuation">:</span> <span class="string">&quot;The Last Survivors&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;author&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Ethan Stone&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;genre&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Science Fiction&quot;</span></span><br><span class="line">  <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;book3&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;title&quot;</span><span class="punctuation">:</span> <span class="string">&quot;The Secret Life of Mrs. Jenkins&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;author&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Lila Rosewood&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;genre&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Mystery&quot;</span></span><br><span class="line">  <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="要求模型检查条件是否得到满足"><a href="#要求模型检查条件是否得到满足" class="headerlink" title="要求模型检查条件是否得到满足"></a>要求模型检查条件是否得到满足</h3><p>可以要求模型做一些前置的检查，如果不满足这些检查条件时，则提示并终止任务。</p>
+<p>比如，现在给 gpt 一段文本，要求它对文本进行总结，需要总结 step by step 的结构进行输出，如果提供的文本不满足这种结构，就提示。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">text_1 = <span class="string">f&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">Making a cup of tea is easy! First, you need to get some \ </span></span><br><span class="line"><span class="string">water boiling. While that&#x27;s happening, \ </span></span><br><span class="line"><span class="string">grab a cup and put a tea bag in it. Once the water is \ </span></span><br><span class="line"><span class="string">hot enough, just pour it over the tea bag. \ </span></span><br><span class="line"><span class="string">Let it sit for a bit so the tea can steep. After a \ </span></span><br><span class="line"><span class="string">few minutes, take out the tea bag. If you \ </span></span><br><span class="line"><span class="string">like, you can add some sugar or milk to taste. \ </span></span><br><span class="line"><span class="string">And that&#x27;s it! You&#x27;ve got yourself a delicious \ </span></span><br><span class="line"><span class="string">cup of tea to enjoy.</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line">prompt = <span class="string">f&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">You will be provided with text delimited by triple quotes. </span></span><br><span class="line"><span class="string">If it contains a sequence of instructions, \ </span></span><br><span class="line"><span class="string">re-write those instructions in the following format:</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">Step 1 - ...</span></span><br><span class="line"><span class="string">Step 2 - …</span></span><br><span class="line"><span class="string">…</span></span><br><span class="line"><span class="string">Step N - …</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">If the text does not contain a sequence of instructions, \ </span></span><br><span class="line"><span class="string">then simply write \&quot;No steps provided.\&quot;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">\&quot;\&quot;\&quot;<span class="subst">&#123;text_1&#125;</span>\&quot;\&quot;\&quot;</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line">response = get_completion(prompt)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Completion for Text 1:&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(response)</span><br></pre></td></tr></table></figure>
+
+<p>这里要求对三引号中的文本进行总结，并按照 Step 1 ~ Step N 进行输出，如果 text 的内容不存在这样的结构，就仅仅只是输出<code>No Stpes provided</code>。</p>
+<p>Output：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Completion for Text 1:</span><br><span class="line">Step 1 - Get some water boiling.</span><br><span class="line">Step 2 - Grab a cup and put a tea bag in it.</span><br><span class="line">Step 3 - Once the water is hot enough, pour it over the tea bag.</span><br><span class="line">Step 4 - Let it sit for a bit so the tea can steep.</span><br><span class="line">Step 5 - After a few minutes, take out the tea bag.</span><br><span class="line">Step 6 - Add some sugar or milk to taste.</span><br><span class="line">Step 7 - Enjoy your delicious cup of tea!</span><br></pre></td></tr></table></figure>
+
+<p>当 text 的内容不存在这种结构时，比如 text 仅仅只有 Hello 时：</p>
+<p>Output：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Completion for Text 1:</span><br><span class="line">No steps provided.</span><br></pre></td></tr></table></figure>
+
+<h3 id="向模型提供一些提示样本"><a href="#向模型提供一些提示样本" class="headerlink" title="向模型提供一些提示样本"></a>向模型提供一些提示样本</h3><p>给予模型一些成功的完整样本，并让执行任务。</p>
+<p>比如，要求模型以一致的对话风格完善文本。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">prompt = <span class="string">f&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">Your task is to answer in a consistent style.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">&lt;child&gt;: Teach me about patience.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">&lt;grandparent&gt;: The river that carves the deepest \ </span></span><br><span class="line"><span class="string">valley flows from a modest spring; the \ </span></span><br><span class="line"><span class="string">grandest symphony originates from a single note; \ </span></span><br><span class="line"><span class="string">the most intricate tapestry begins with a solitary thread.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">&lt;child&gt;: Teach me about resilience.</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line">response = get_completion(prompt)</span><br><span class="line"><span class="built_in">print</span>(response)</span><br></pre></td></tr></table></figure>
+
+<p>Output：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;grandparent&gt;: Resilience is like a tree that bends with the wind but never breaks. It is the ability to bounce back from adversity and keep moving forward, even when things get tough. Just like a tree that grows stronger with each storm it weathers, resilience is a quality that can be developed and strengthened over time.</span><br></pre></td></tr></table></figure>
+
+<p>这是一个小孩在跟祖父母对话的场景，小孩说“教我什么是忍耐”时，祖父母的回答使用了比喻的方式来进行阐述。</p>
+<p>那么当孩子说“什么是适应力”时，gpt 的回答也使用了比喻来进行阐述。</p>
+<h2 id="给予模型思考的时间"><a href="#给予模型思考的时间" class="headerlink" title="给予模型思考的时间"></a>给予模型思考的时间</h2><p>当模型短时间内得不到答案时，应该重新设计 prompt，让模型在得出答案前有一系列推理，最终得到答案。</p>
+<p>另外，给模型一个复杂任务时，如果模型无法短时间内完成，或者无法用少量的词完成时，往往会<strong>编造</strong>出一些错误的答案。</p>
+<p>所以，在这个准则上，也提供了以下几个准则。</p>
+<h3 id="指定完成一项任务所需要的步骤"><a href="#指定完成一项任务所需要的步骤" class="headerlink" title="指定完成一项任务所需要的步骤"></a>指定完成一项任务所需要的步骤</h3><p>比如下面的例子：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">text = <span class="string">f&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">In a charming village, siblings Jack and Jill set out on \ </span></span><br><span class="line"><span class="string">a quest to fetch water from a hilltop \ </span></span><br><span class="line"><span class="string">well. As they climbed, singing joyfully, misfortune \ </span></span><br><span class="line"><span class="string">struck—Jack tripped on a stone and tumbled \ </span></span><br><span class="line"><span class="string">down the hill, with Jill following suit. \ </span></span><br><span class="line"><span class="string">Though slightly battered, the pair returned home to \ </span></span><br><span class="line"><span class="string">comforting embraces. Despite the mishap, \ </span></span><br><span class="line"><span class="string">their adventurous spirits remained undimmed, and they \ </span></span><br><span class="line"><span class="string">continued exploring with delight.</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="comment"># example 1</span></span><br><span class="line">prompt_1 = <span class="string">f&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">Perform the following actions: </span></span><br><span class="line"><span class="string">1 - Summarize the following text delimited by triple \</span></span><br><span class="line"><span class="string">backticks with 1 sentence.</span></span><br><span class="line"><span class="string">2 - Translate the summary into French.</span></span><br><span class="line"><span class="string">3 - List each name in the French summary.</span></span><br><span class="line"><span class="string">4 - Output a json object that contains the following \</span></span><br><span class="line"><span class="string">keys: french_summary, num_names.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">Separate your answers with line breaks.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">Text:</span></span><br><span class="line"><span class="string">```<span class="subst">&#123;text&#125;</span>```</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line">response = get_completion(prompt_1)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Completion for prompt 1:&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(response)</span><br></pre></td></tr></table></figure>
+
+<p>这个 prompt 让模型做了四件事并用换行符分隔：将`````中的内容总结成为一句话，将总结的内容翻译成法语，列出法语版的摘要总结中出现了每个名字，输出一个包含 french_summary、num_names 两个 key 的 json 文本。</p>
+<p>Output:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">Completion <span class="keyword">for</span> prompt <span class="number">1</span>:</span><br><span class="line">Two siblings, Jack <span class="keyword">and</span> Jill, go on a quest to fetch water <span class="keyword">from</span> a hilltop well, but misfortune strikes <span class="keyword">as</span> they both fall down the hill, yet they <span class="keyword">return</span> home slightly battered but <span class="keyword">with</span> their adventurous spirits undimmed.</span><br><span class="line"></span><br><span class="line">Deux frères et sœurs, Jack et Jill, partent en quête d<span class="string">&#x27;eau d&#x27;</span>un puits au sommet d<span class="string">&#x27;une colline, mais ils tombent tous les deux et retournent chez eux légèrement meurtris mais avec leur esprit d&#x27;</span>aventure intact. </span><br><span class="line">Noms: Jack, Jill.</span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line"><span class="string">&quot;french_summary&quot;</span>: <span class="string">&quot;Deux frères et sœurs, Jack et Jill, partent en quête d&#x27;eau d&#x27;un puits au sommet d&#x27;une colline, mais ils tombent tous les deux et retournent chez eux légèrement meurtris mais avec leur esprit d&#x27;aventure intact.&quot;</span>,</span><br><span class="line"><span class="string">&quot;num_names&quot;</span>: <span class="number">2</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>更进一步，对于输出的格式，还可以通过 prompt 进一步定制：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">prompt_2 = <span class="string">f&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">Your task is to perform the following actions: </span></span><br><span class="line"><span class="string">1 - Summarize the following text delimited by </span></span><br><span class="line"><span class="string">  &lt;&gt; with 1 sentence.</span></span><br><span class="line"><span class="string">2 - Translate the summary into French.</span></span><br><span class="line"><span class="string">3 - List each name in the French summary.</span></span><br><span class="line"><span class="string">4 - Output a json object that contains the </span></span><br><span class="line"><span class="string">  following keys: french_summary, num_names.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">Use the following format:</span></span><br><span class="line"><span class="string">Text: &lt;text to summarize&gt;</span></span><br><span class="line"><span class="string">Summary: &lt;summary&gt;</span></span><br><span class="line"><span class="string">Translation: &lt;summary translation&gt;</span></span><br><span class="line"><span class="string">Names: &lt;list of names in Italian summary&gt;</span></span><br><span class="line"><span class="string">Output JSON: &lt;json with summary and num_names&gt;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">Text: &lt;<span class="subst">&#123;text&#125;</span>&gt;</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line">response = get_completion(prompt_2)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;\nCompletion for prompt 2:&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(response)</span><br></pre></td></tr></table></figure>
+
+<p>Output：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Completion for prompt 2:</span><br><span class="line">Summary: Jack and Jill go on a quest to fetch water, but misfortune strikes and they tumble down the hill, returning home slightly battered but with their adventurous spirits undimmed. </span><br><span class="line">Translation: Jack et Jill partent en quête d&#x27;eau, mais la malchance frappe et ils dégringolent la colline, rentrant chez eux légèrement meurtris mais avec leurs esprits aventureux intacts.</span><br><span class="line">Names: Jack, Jill</span><br><span class="line">Output JSON: &#123;&quot;french_summary&quot;: &quot;Jack et Jill partent en quête d&#x27;eau, mais la malchance frappe et ils dégringolent la colline, rentrant chez eux légèrement meurtris mais avec leurs esprits aventureux intacts.&quot;, &quot;num_names&quot;: 2&#125;</span><br></pre></td></tr></table></figure>
+
+<p>会发现 prompt 中使用<code>&lt;&gt;</code>这个符号的地方其实不止一个，但依然不影响模型的运行，并给出了指定格式的输出内容。</p>
+<blockquote>
+<p>从通常的编程语言的角度来看，这其实很神奇，虽然我们的提示词中有说总结 &lt;&gt; 中的内容，但整个提示词中不止一个地方有 &lt;&gt;，模型竟然自动识别到了要总结的文本是 Text 后面的内容。</p>
+<p>这或许就是 ai 的魅力所在。</p>
+</blockquote>
+<h3 id="在得到答案前，先自定寻找解决方案"><a href="#在得到答案前，先自定寻找解决方案" class="headerlink" title="在得到答案前，先自定寻找解决方案"></a>在得到答案前，先自定寻找解决方案</h3><p>下面的例子：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">prompt = <span class="string">f&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">Determine if the student&#x27;s solution is correct or not.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">Question:</span></span><br><span class="line"><span class="string">I&#x27;m building a solar power installation and I need \</span></span><br><span class="line"><span class="string"> help working out the financials. </span></span><br><span class="line"><span class="string">- Land costs $100 / square foot</span></span><br><span class="line"><span class="string">- I can buy solar panels for $250 / square foot</span></span><br><span class="line"><span class="string">- I negotiated a contract for maintenance that will cost \ </span></span><br><span class="line"><span class="string">me a flat $100k per year, and an additional $10 / square \</span></span><br><span class="line"><span class="string">foot</span></span><br><span class="line"><span class="string">What is the total cost for the first year of operations </span></span><br><span class="line"><span class="string">as a function of the number of square feet.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">Student&#x27;s Solution:</span></span><br><span class="line"><span class="string">Let x be the size of the installation in square feet.</span></span><br><span class="line"><span class="string">Costs:</span></span><br><span class="line"><span class="string">1. Land cost: 100x</span></span><br><span class="line"><span class="string">2. Solar panel cost: 250x</span></span><br><span class="line"><span class="string">3. Maintenance cost: 100,000 + 100x</span></span><br><span class="line"><span class="string">Total cost: 100x + 250x + 100,000 + 100x = 450x + 100,000</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line">response = get_completion(prompt)</span><br><span class="line"><span class="built_in">print</span>(response)</span><br></pre></td></tr></table></figure>
+
+<p>Output:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">The student&#x27;s solution is correct.</span><br></pre></td></tr></table></figure>
+
+<p>这个 Prompt 是要模型判定学生的解题是否正确。</p>
+<p>问题是：每平方土地成本 100 美元，每平方太阳能电池板 250 美元，签订了每年固定 100000 美元的维护合同，每平方还有额外的 10 美元成本，那么第一年运营的总成本是多少？</p>
+<p>学生解题：假设有 x 平方，那么总成本为 100x + 250x + 100000 + 100x = 450x + 100000。</p>
+<p>模型判定结果：学生是对的。</p>
+<p>但实际上，是错误的，在这种情况下，我们可以试着让模型自己先解题，然后再和学生的解决方案对比，让判定结果更加准确。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line">prompt = <span class="string">f&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">Your task is to determine if the student&#x27;s solution \</span></span><br><span class="line"><span class="string">is correct or not.</span></span><br><span class="line"><span class="string">To solve the problem do the following:</span></span><br><span class="line"><span class="string">- First, work out your own solution to the problem. </span></span><br><span class="line"><span class="string">- Then compare your solution to the student&#x27;s solution \ </span></span><br><span class="line"><span class="string">and evaluate if the student&#x27;s solution is correct or not. </span></span><br><span class="line"><span class="string">Don&#x27;t decide if the student&#x27;s solution is correct until </span></span><br><span class="line"><span class="string">you have done the problem yourself.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">Use the following format:</span></span><br><span class="line"><span class="string">Question:</span></span><br><span class="line"><span class="string">```</span></span><br><span class="line"><span class="string">question here</span></span><br><span class="line"><span class="string">```</span></span><br><span class="line"><span class="string">Student&#x27;s solution:</span></span><br><span class="line"><span class="string">```</span></span><br><span class="line"><span class="string">student&#x27;s solution here</span></span><br><span class="line"><span class="string">```</span></span><br><span class="line"><span class="string">Actual solution:</span></span><br><span class="line"><span class="string">```</span></span><br><span class="line"><span class="string">steps to work out the solution and your solution here</span></span><br><span class="line"><span class="string">```</span></span><br><span class="line"><span class="string">Is the student&#x27;s solution the same as actual solution \</span></span><br><span class="line"><span class="string">just calculated:</span></span><br><span class="line"><span class="string">```</span></span><br><span class="line"><span class="string">yes or no</span></span><br><span class="line"><span class="string">```</span></span><br><span class="line"><span class="string">Student grade:</span></span><br><span class="line"><span class="string">```</span></span><br><span class="line"><span class="string">correct or incorrect</span></span><br><span class="line"><span class="string">```</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">Question:</span></span><br><span class="line"><span class="string">```</span></span><br><span class="line"><span class="string">I&#x27;m building a solar power installation and I need help \</span></span><br><span class="line"><span class="string">working out the financials. </span></span><br><span class="line"><span class="string">- Land costs $100 / square foot</span></span><br><span class="line"><span class="string">- I can buy solar panels for $250 / square foot</span></span><br><span class="line"><span class="string">- I negotiated a contract for maintenance that will cost \</span></span><br><span class="line"><span class="string">me a flat $100k per year, and an additional $10 / square \</span></span><br><span class="line"><span class="string">foot</span></span><br><span class="line"><span class="string">What is the total cost for the first year of operations \</span></span><br><span class="line"><span class="string">as a function of the number of square feet.</span></span><br><span class="line"><span class="string">``` </span></span><br><span class="line"><span class="string">Student&#x27;s solution:</span></span><br><span class="line"><span class="string">```</span></span><br><span class="line"><span class="string">Let x be the size of the installation in square feet.</span></span><br><span class="line"><span class="string">Costs:</span></span><br><span class="line"><span class="string">1. Land cost: 100x</span></span><br><span class="line"><span class="string">2. Solar panel cost: 250x</span></span><br><span class="line"><span class="string">3. Maintenance cost: 100,000 + 100x</span></span><br><span class="line"><span class="string">Total cost: 100x + 250x + 100,000 + 100x = 450x + 100,000</span></span><br><span class="line"><span class="string">```</span></span><br><span class="line"><span class="string">Actual solution:</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line">response = get_completion(prompt)</span><br><span class="line"><span class="built_in">print</span>(response)</span><br></pre></td></tr></table></figure>
+
+<p>Output:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">Let x be the size of the installation in square feet.</span><br><span class="line"></span><br><span class="line">Costs:</span><br><span class="line">1. Land cost: 100x</span><br><span class="line">2. Solar panel cost: 250x</span><br><span class="line">3. Maintenance cost: 100,000 + 10x</span><br><span class="line"></span><br><span class="line">Total cost: 100x + 250x + 100,000 + 10x = 360x + 100,000</span><br><span class="line"></span><br><span class="line">Is the student&#x27;s solution the same as actual solution just calculated:</span><br><span class="line">No</span><br><span class="line"></span><br><span class="line">Student grade:</span><br><span class="line">Incorrect</span><br></pre></td></tr></table></figure>
+
+<p>这个新的 prompt 让模型先自己对问题进行解决，然后再和学生的解决方案对比，再判断和学生的解决方案是否一致，再判定学生的解决方案是否正确。</p>
+<p>为了确保是模型自己解决这个问题，prompt 中还特地强调在自己完成解决方案之前不能判定学生的方案的对错：Don’t decide if the student’s solution is correct until you have done the problem yourself.</p>
+<h1 id="模型的局限性"><a href="#模型的局限性" class="headerlink" title="模型的局限性"></a>模型的局限性</h1><p>因为模型读取了大量的数据，但是并不能完整准确地记录所有的内容，所以当它回答一些晦涩难懂的问题时，可能会产生幻觉，会编造一些看起来真实但实际上是并不真实的回答。这也是 gpt 模型目前已知的一个缺陷。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">prompt=<span class="string">&quot;简单讲讲刘备和曹操结拜兄弟的故事&quot;</span></span><br><span class="line">response = get_completion(prompt)</span><br><span class="line"><span class="built_in">print</span>(response)</span><br></pre></td></tr></table></figure>
+
+<p>Output:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">刘备和曹操结拜兄弟的故事源于《三国演义》。据传，刘备和曹操在东汉末年，都是出身名门的豪族，但由于时局动荡，两人都失去了家族的地位和财富。他们在一次相遇后，互相交流了彼此的遭遇和心情，深感彼此的志向和品德相投，于是决定结为兄弟。</span><br><span class="line">刘备和曹操在结拜时，按照古代的习俗，要进行三次拜礼。第一次拜礼时，刘备说：“我刘备愿与你结为兄弟，如同手足之情，共同扶持天下。”曹操回答：“我曹操也愿与你结为兄弟，如同肝胆相照，共同建功立业。”第二次拜礼时，两人交换了誓言，表示要共同努力，不离不弃。第三次拜礼时，两人用刀割破手指，混合鲜血，喝下了誓血，表示要永远保持兄弟之情。</span><br><span class="line">刘备和曹操结拜后，曹操帮助刘备重建了家族，刘备也在曹操的帮助下，成为了一名有名的将领。但是，由于两人的政治理念和野心不同，最终还是走上了对立的道路，成为了三国时期的两大敌对势力。</span><br></pre></td></tr></table></figure>
+
+<p>为了减少这种幻觉，你可以在 prompt 中指定模型在引用某些资源的基础上作答，这样能更好的避免出现“幻觉”。</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><ul>
+<li>如果构建的系统需要保持输出的稳定性，temperature 参数的值建议设置成 0。</li>
+<li>对与 gpt 模型的使用，为了让它的回答更准确，指令需要清晰、具体，但并不代表指令一定非常短，同时还可以通过增加分隔符来防止 prompt 注入，通过限制输出的结构、指定条件的检查、prompt 带上提示样本等策略，亦可以提高输出的准确性。</li>
+<li>对于比较复杂的任务，可以告诉模型，完成这个任务需要的步骤，让模型一步一步进行推进，而不是一步到位。</li>
+<li>模型的输出，在面对晦涩难懂的任务时，会出现“幻觉”，这种情况，可以在 prompt 指定让模型在引用某些资源的基础上进行回答，可以尽量避免出现“幻觉”。</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/AIGC/" rel="tag"># AIGC</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/posts/d313d441e973" rel="prev" title="MyBatis源码解析：配置解析">
+                  <i class="fa fa-chevron-left"></i> MyBatis源码解析：配置解析
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/posts/5382e3ced375" rel="next" title="Spring Cloud Stream RocketMQ入门">
+                  Spring Cloud Stream RocketMQ入门 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="beian"><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">渝ICP备2021012299号-1 </a>
+      <img src="/img/icp.png" alt=""><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=%E6%B8%9D%E5%85%AC%E7%BD%91%E5%AE%89%E5%A4%87%2050023402000631%E5%8F%B7" rel="noopener" target="_blank">渝公网安备 50023402000631号 </a>
+  </div>
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">假隐士</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">450k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">6:49</span>
+  </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/9.1.6/mermaid.min.js","integrity":"sha256-ZfzwelSToHk5YAcr9wbXAmWgyn9Jyq08fSLrLhZE89w="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

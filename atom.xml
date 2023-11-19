@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>假隐士</title>
+  <icon>http://hanelalo.cn/icon.png</icon>
+  
+  <link href="http://hanelalo.cn/atom.xml" rel="self"/>
+  
+  <link href="http://hanelalo.cn/"/>
+  <updated>2023-11-19T13:53:28.584Z</updated>
+  <id>http://hanelalo.cn/</id>
+  
+  <author>
+    <name>假隐士</name>
+    
+  </author>
+  
+  <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Flink 入门：Flink 架构</title>
+    <link href="http://hanelalo.cn/posts/41f5515b7292"/>
+    <id>http://hanelalo.cn/posts/41f5515b7292</id>
+    <published>2023-11-18T12:55:33.000Z</published>
+    <updated>2023-11-19T13:53:28.584Z</updated>
+    
+    
+    <summary type="html">在大数据时代下，为了普通的 OLTP 系统结合离线分析已经无法满足越来越复杂的业务，为了构建一个具备扩展性、高性能的性能，像 Flink 这一类流处理引擎日渐壮大。</summary>
+    
+    
+    
+    <category term="Flink" scheme="http://hanelalo.cn/categories/Flink/"/>
+    
+    
+    <category term="大数据" scheme="http://hanelalo.cn/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/"/>
+    
+  </entry>
+  
+</feed>

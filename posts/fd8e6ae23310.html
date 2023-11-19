@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/img/avatar.jpg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/img/avatar.jpg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/img/avatar.jpg">
+  <link rel="mask-icon" href="/img/avatar.jpg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha256-AbA177XfpSnFEvgpYu1jMygiLabzPCJCRIBtR5jGc0k=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"hanelalo.cn","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.13.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="关于 CAP、BASE 理论和分布式事务相关的一些总结。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CAP理论与分布式事务">
+<meta property="og:url" content="http://hanelalo.cn/posts/fd8e6ae23310">
+<meta property="og:site_name" content="假隐士">
+<meta property="og:description" content="关于 CAP、BASE 理论和分布式事务相关的一些总结。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://image.hanelalo.cn/image/202203152219479.jpg">
+<meta property="article:published_time" content="2022-03-15T22:17:20.000Z">
+<meta property="article:modified_time" content="2023-11-19T13:53:28.584Z">
+<meta property="article:author" content="假隐士">
+<meta property="article:tag" content="分布式">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://image.hanelalo.cn/image/202203152219479.jpg">
+
+
+<link rel="canonical" href="http://hanelalo.cn/posts/fd8e6ae23310.html">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://hanelalo.cn/posts/fd8e6ae23310","path":"posts/fd8e6ae23310.html","title":"CAP理论与分布式事务"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>CAP理论与分布式事务 | 假隐士</title>
+  
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="假隐士" type="application/atom+xml">
+<link rel="alternate" href="/rss2.xml" title="假隐士" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">假隐士</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-首页"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-关于我"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于我</a></li><li class="menu-item menu-item-标签"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-分类"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-归档"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li><li class="menu-item menu-item-闲书杂记"><a href="/blog/" rel="section"><i class="fa fa-book fa-fw"></i>闲书杂记</a></li><li class="menu-item menu-item-菜谱"><a href="/cookbook/" rel="section"><i class="fa fa-link fa-fw"></i>菜谱</a></li><li class="menu-item menu-item-常用网站"><a href="/normal-website" rel="section"><i class="fas fa-atlas fa-fw"></i>常用网站</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#CAP-%E7%90%86%E8%AE%BA"><span class="nav-number">1.</span> <span class="nav-text">CAP 理论</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1"><span class="nav-number">2.</span> <span class="nav-text">分布式事务</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A6%82%E8%BF%B0"><span class="nav-number">2.1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#BASE-%E7%90%86%E8%AE%BA"><span class="nav-number">2.2.</span> <span class="nav-text">BASE 理论</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88"><span class="nav-number">2.3.</span> <span class="nav-text">解决方案</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%A4%E9%98%B6%E6%AE%B5%E6%8F%90%E4%BA%A4%EF%BC%88TPC%EF%BC%89-XA-%E5%8D%8F%E8%AE%AE"><span class="nav-number">2.3.1.</span> <span class="nav-text">两阶段提交（TPC）&#x2F;XA 协议</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%89%E9%98%B6%E6%AE%B5%E6%8F%90%E4%BA%A4"><span class="nav-number">2.3.2.</span> <span class="nav-text">三阶段提交</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%AF%E9%9D%A0%E4%BA%8B%E4%BB%B6%E9%98%9F%E5%88%97"><span class="nav-number">2.3.3.</span> <span class="nav-text">可靠事件队列</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#TCC-%E4%BA%8B%E5%8A%A1"><span class="nav-number">2.3.4.</span> <span class="nav-text">TCC 事务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SAGA-%E4%BA%8B%E5%8A%A1"><span class="nav-number">2.3.5.</span> <span class="nav-text">SAGA 事务</span></a></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="假隐士"
+      src="/img/avatar.jpg">
+  <p class="site-author-name" itemprop="name">假隐士</p>
+  <div class="site-description" itemprop="description">做该做的事，然后接受它的事与愿违。</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">53</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">22</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/hanelalo" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;hanelalo" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+  <a href="https://github.com/hanelalo" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://hanelalo.cn/posts/fd8e6ae23310">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/img/avatar.jpg">
+      <meta itemprop="name" content="假隐士">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="假隐士">
+      <meta itemprop="description" content="做该做的事，然后接受它的事与愿违。">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="CAP理论与分布式事务 | 假隐士">
+      <meta itemprop="description" content="关于 CAP、BASE 理论和分布式事务相关的一些总结。">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          CAP理论与分布式事务
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-03-15 22:17:20" itemprop="dateCreated datePublished" datetime="2022-03-15T22:17:20+00:00">2022-03-15</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-11-19 13:53:28" itemprop="dateModified" datetime="2023-11-19T13:53:28+00:00">2023-11-19</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%88%86%E5%B8%83%E5%BC%8F/" itemprop="url" rel="index"><span itemprop="name">分布式</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>4.8k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>4 分钟</span>
+    </span>
+</div>
+
+            <div class="post-description">关于 CAP、BASE 理论和分布式事务相关的一些总结。</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <img src='https://image.hanelalo.cn/image/202203152219479.jpg'/>
+
+<span id="more"></span>
+
+<blockquote>
+<p>最近做一些 interview 遇到了一些问题，有时间慢慢总结，慢慢学习。</p>
+</blockquote>
+<h1 id="CAP-理论"><a href="#CAP-理论" class="headerlink" title="CAP 理论"></a>CAP 理论</h1><p>现代的业务系统，在业务有了一定复杂度之后，都会逐渐向微服务、服务网格甚至无服务的方向演进。不管发展到那个阶段，都会脱离单体架构，演化成一个分布式的系统，分布式系统涉及共享数据的问题时，总会讨论一致性、可用性、分区容忍性。</p>
+<ul>
+<li><p>一致性（Consistency）</p>
+<p>一致性表示任何时刻，任何分布式节点看到的数据都是符合预期的。</p>
+</li>
+<li><p>可用性（Availability）</p>
+<p>可用性主要用可靠性和可维护性两个指标衡量。可靠性使用平均无故障时间 (Mean Time Between Failure，MTBF) 来度量，可维护性使用平均修复时间 (Mean Time To Repair，MTTR) 来衡量，常说的系统可用性达到 5 个 9，其实就是说 <code>MTBF / (MTBF + MTTR) = 99.999%</code>。</p>
+</li>
+<li><p>分区容忍性（Partition Tolerance）</p>
+<p>指部分节点因网络问题相互失联后，形成了网络分区，依然能正常提供服务。</p>
+</li>
+</ul>
+<p>首先，分布式系统中，认为系统的网络通信是可靠的，但是事实上，因为网络环境的复杂性，并不能完全保证网络的可靠性，所以分区容忍性是必须保证的。</p>
+<p>业界也一致认为，一致性和可用性不可兼得，所以现在的分布式系统，要么是 CP 系统，要么是 AP 系统。</p>
+<ul>
+<li><p>CP 系统</p>
+<p>牺牲可用性，当系统发生网络分区时，因为要保证数据的一致性，节点间的数据同步将不可预期地延长，或者直接响应失败，响应失败意味着可用性降低。</p>
+<p>Zookeeper 作为服务注册和发现中心时，当发生网络分区时，为了保证数据一致性，分区内重新进行了选举，这个过程是耗时的，选举过程中，整个服务注册与发现功能是不可用的，所以 Zookeeper 是一个 CP 系统。</p>
+</li>
+<li><p>AP 系统</p>
+<p>牺牲一致性，当系统出现网络分区时，各个分区各自为政，继续对外服务，就可能出现数据不一致的情况，比如相同的请求分发到不同分区，导致得到的结果不一样。</p>
+<p>Eureka 同样也是服务注册与发现，和 Zookeeper 不同的是，每个服务往每个注册中心都进行注册，整个 Eureka 集群不分主从节点，只要还有一个节点活着，就能继续提供服务，只不过数据可能已经过时了，所以 Eureka 是一个 AP 系统。</p>
+</li>
+</ul>
+<h1 id="分布式事务"><a href="#分布式事务" class="headerlink" title="分布式事务"></a>分布式事务</h1><h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>在微服务架构下，因为服务间需要做到数据自治，常常会进行分库，不同的微服务使用不同的库，当一个业务需要调用多个写服务时，就涉及到分布式事务的问题。</p>
+<blockquote>
+<p>也有些非规范的做法，将写服务中访问数据库的代码打包成一个 jar 包，供其他服务依赖，其实所有的数据库写操作都在一个本地事务中，不存在分布式事务，这种的我认为不是微服务，因为代码还是产生了耦合，而微服务本身有一个目的就是解耦。</p>
+</blockquote>
+<p>需要说明的是，一个本地事务执行过程，遵循事务的 ACID 原则，对于事务的隔离级别，又分成了<strong>读未提交、读已提交、可重复度、串行执行。</strong></p>
+<p>但到了分布式环境中，势必会有多个事务分布在不同的进程中，很难保证进程 A 中的事务和进程 B 中的事务会一起成功或一起失败，所以对于分布式事务的一致性分成了三类：</p>
+<ol>
+<li><p>弱一致性</p>
+<p>数据更新后，能容忍后续访问出现部分访问不到或者直接无法访问的情况。</p>
+</li>
+<li><p>强一致性</p>
+<p>任意时刻，在任何一个节点看到的数据都是一致的。</p>
+</li>
+<li><p>最终一致性</p>
+<p>允许数据在短时间内不一致，但经过一定时间最终达到一致。</p>
+</li>
+</ol>
+<p>而最终一致性起源于以 CAP 理论为基础扩展而来的 BASE 理论。</p>
+<h2 id="BASE-理论"><a href="#BASE-理论" class="headerlink" title="BASE 理论"></a>BASE 理论</h2><ul>
+<li><p>Basically Available</p>
+<p>基本可用，当出现故障时，能容忍系统部分不可用，来保证核心功能可用。</p>
+</li>
+<li><p>Soft State</p>
+<p>软状态，允许系统存在中间状态，且这种中间状态不会对系统造成影响。</p>
+</li>
+<li><p>Eventually Consistent</p>
+<p>最终一致性，允许分布式系统中不同节点在同一时刻读到的状态不一致，但是随着时间推移，最终会保持一致。</p>
+</li>
+</ul>
+<h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h2><h3 id="两阶段提交（TPC）-XA-协议"><a href="#两阶段提交（TPC）-XA-协议" class="headerlink" title="两阶段提交（TPC）/XA 协议"></a>两阶段提交（TPC）/XA 协议</h3><p>两阶段提交的实现中，有 2 个概念：</p>
+<ul>
+<li><p>事务管理器</p>
+<p>协调各个本地资源管理器。</p>
+</li>
+<li><p>本地资源管理器</p>
+<p>一般是指执行各个本地事务的应用。</p>
+</li>
+</ul>
+<p>上面的两个管理器，一般都是数据库扮演的，而不需要应用的接入，事务管理器的选择也是数据库自行选择的。</p>
+<p>两阶段提交的 2 步：</p>
+<ol>
+<li>准备阶段，事务管理器向所有参与事务的本地资源管理器询问是否准备就绪，资源管理器在响应这次询问时，会执行本地事务，但是不会提交，也就是说会一直持有数据的锁，保证对其他事务的隔离性。</li>
+<li>提交或回滚阶段，管理器收到所有资源管理器回复 Prepared 消息后，先将自己的本地事务 Commit，然后通知其他资源管理器进行 Commit，而如果收到一个资源管理器回复 Abort 或者资源管理器的回复超时了，就会先将自己的本地事务回滚，然后通知其他资源管理器回滚。</li>
+</ol>
+<p>两阶段提交因为是所有本地事务一起提交，只是可能会有细微的网络延迟导致的时间差异而已，所以，使用两阶段提交需要有两个保证：</p>
+<ol>
+<li>网络是可靠的，不会丢失消息，比如丢失协调器发送给资源管理器的 Commit 的消息，如果这个消息丢了，是无法补救的。</li>
+<li>出现网络分区时可恢复，当资源管理器因为各种原因下线、停机后，最终能够恢复上线，而不是一直失联，因为在恢复后才能将未提交的本地事务提交。</li>
+</ol>
+<p>两阶段提交虽然简单，但是缺点也比较显著：</p>
+<ul>
+<li><p>单点问题</p>
+<p>在事务管理器和资源管理器的通信中，事务管理器对资源管理器超时这种情况还会有回滚的操作，但是如果挂掉的是事务管理器，资源管理器在接受事务管理器的指令这个点上是没有超时机制的，所以，如果事务管理器挂了，那么所有资源管理器会一直等待。</p>
+</li>
+<li><p>性能问题</p>
+<p>两阶段提交过程中，相当于将多个进程中的本地事务绑定成了一个整体，整个过程中有 2 次远程调用，3 次数据库写入（一阶段执行本地事务写 redo log，二阶段事务管理器持久化事务状态，二阶段资源管理器提交事务），整个过程将持续到最后一步中操作时间最长的本地事务完成为止。</p>
+</li>
+<li><p>一致性风险</p>
+<p>前文提到两阶段的必要网络条件和网络分区可恢复保证，但是实际上，并不能 100% 保证不会因为网络故障导致丢失 Commit 消息，也不能保证资源管理器下线之后一定会上线，这个时候就会出现一致性问题，有些本地事务提交了，有些本地事务一直在等待或者直接丢失。</p>
+</li>
+</ul>
+<h3 id="三阶段提交"><a href="#三阶段提交" class="headerlink" title="三阶段提交"></a>三阶段提交</h3><p>为了解决上述两阶段提交的部分问题，又演化出了三阶段提交。具体来讲，其实解决的是单点问题和准备阶段的性能问题。</p>
+<p>三阶段提交将两阶段提交中的准备阶段又细分为 CanCommit、Pre Commit 两个阶段，二阶段中的提交或回滚阶段叫做 Do Commit。</p>
+<ul>
+<li><p>Can Commit</p>
+<p>询问每个资源管理器，根据当前的自身状态评估该事务是否有可能顺利完成。</p>
+</li>
+<li><p>Pre Commit</p>
+<p>每个资源管理器执行本地事务，但是不提交，其实就是写了 redo log。</p>
+</li>
+<li><p>Do Commit</p>
+<p>和二阶段一样，提交或者回滚。</p>
+</li>
+</ul>
+<p>第一阶段并不会执行事务中的一些 SQL，所以会很快，这一步的存在是为了更好的保证事务能顺利完成，向二阶段提交那样，其中一个资源管理器失败了，而其他分支事务都成功了，最后依然还是回滚，那么那写成功的分支其实是做了无用功，所以这在一定程度上也缓解了两阶段提交的第一阶段的性能问题。</p>
+<p>第二阶段依然是执行事务内的 SQL，写入 redo log，但事务不会提交。</p>
+<p>第三阶段，和两阶段提交相似，全部成功就提交，其中一个失败就是回滚，不同的是，对于事务管理器在第三阶段指令超时的情况，这里不会一直等待，资源管理器超时后会执行提交操作。</p>
+<p>性能上，因为多了一阶段的检查，所以如果是整个分布式事务最终能够成功提交的场景下，三阶段提交性能可能甚至不如两阶段提交，而对于回滚的场景，因为做了提前的检查，所以出现大部分资源管理器都写了 redo log 之后依然回滚的概率比较小，更大概率是在一阶段就直接失败了，所以，对于回滚的场景，三阶段提交相对于两阶段提交有所提升。</p>
+<p>一致性方面，三阶段提交可能会导致数据错误，比如在第三阶段资源管理器应该受到 Abort 消息而回滚，但是网络原因导致超时，最后实际执行的是 Commit，这个时候就会出现数据不一致的情况。</p>
+<h3 id="可靠事件队列"><a href="#可靠事件队列" class="headerlink" title="可靠事件队列"></a>可靠事件队列</h3><p>现在加入有 A、B、C 三个服务要一起完成一个业务，分布式事务一开始由 A 发起。</p>
+<ol>
+<li>A 服务完成本地事务，并在自己的数据库建立一张消息表，其中主要包含事务 ID、事务的内容、事务状态（进行中），这个，这两个操作是在 A 服务的同一个本地事务中完成，以免出现事务执行成功，但是消息存储失败的情况。</li>
+<li>在系统中建立消息服务，定时轮询第 1 步中的消息表，如果由新的消息，就发送到 B、C 服务，此时会有以下 4 中情况：<ol>
+<li>B、C 都接收到新的消息，并成功执行自己的本地事务并提交，然后将结果返回给 A 服务，A服务将消息表中指定的消息事务状态改为已完成，整个分布式事务结束。</li>
+<li>B、C 两个服务中，至少一个没有成功接收到消息，导致整个分布式事务的状态一直是进行中，此时消息服务器会继续发送消息，知道 B、C 全都成功消费，因为就会出现重复消息的问题，所以 B、C 服务需要做幂等处理，可以考虑将分布式事务的事务 ID 作为标识来进行幂等处理，如果某个 ID 已经处理过了，就不再进行执行本地事务逻辑。</li>
+<li>B、C 至少有一个消费事件失败，导致分布式事务不能完成，这种情况，失败的服务依然会一直消费，知道人工介入，这说明可靠事件队列这种方式是只许成功，不许失败的。</li>
+<li>当 B、C 都消费成功，但是最后发送的返回结果因为网络问题丢失了，此时 A 服务过一段事件会重新发送消息，B、C 会重新消费，但是因为已经做了幂等处理，所以不会再执行事务逻辑，而只是再次触发发送执行结果的逻辑而已。</li>
+</ol>
+</li>
+</ol>
+<blockquote>
+<p>这种方式其实可以通过支持事务消息的消息中间件来实现，比如 RocketMQ。</p>
+</blockquote>
+<h3 id="TCC-事务"><a href="#TCC-事务" class="headerlink" title="TCC 事务"></a>TCC 事务</h3><p>TCC 是 Try-Confirm-Cancel 的缩写，</p>
+<ul>
+<li><p>Try</p>
+<p>尝试执行阶段，完成事务可执行性的检查，预留好执行事务需要的资源，比如锁定库存。</p>
+</li>
+<li><p>Confirm</p>
+<p>确认执行阶段，如果 Try 阶段执行成功，将进入确认执行阶段，这一阶段不执行业务检查，使用 Try 阶段预留的资源直接完成业务逻辑，任何一方出现问题都会重复执行，知道成功为止，所以这一步必须保证幂等性。</p>
+</li>
+<li><p>Cancel</p>
+<p>取消执行阶段，如果 Try 阶段任何一方出现任何问题，将会进入取消执行阶段，取消执行阶段会释放 Try 阶段的资源，如果在这个过程中任何一方出现问题，会一直重复执行，知道释放资源成功，所以这一步必须保证幂等性。</p>
+</li>
+</ul>
+<p>会发现 TCC 事务和两阶段提交很像，但是，两阶段提交是数据库之间自行完成的，不需要应用代码接入，但是 TCC 事务是需要应用层面的代码开发来支持 3 个阶段的操作的，对业务代码侵入性比较强。</p>
+<h3 id="SAGA-事务"><a href="#SAGA-事务" class="headerlink" title="SAGA 事务"></a>SAGA 事务</h3><blockquote>
+<p> SAGA 事务我第一次是在《微服务架构设计模式》这本书上见过。</p>
+</blockquote>
+<p>到目前位置介绍的方案，基本都保证了事务的隔离性，以防止出现“超售”的情况，但是前面几种方案都是建立在这多个分支事务都是可控的情况下，而如果是要对接第三方系统时，前面的方案就没用了，比如在接入微信支付或者支付宝支付时，这写平台肯定不会专门针对每一个平台提供二、三阶段提交或者 TCC 的支持，这个时候，就出现了  SAGA 事务这种解决方案。</p>
+<p>SAGA 要求为每一个事务提供一个补偿事务来保证最终一致性。</p>
+<p>比如，分布式事务 T 分成 T1、T2、T3…Tn 一共 n 个分支事务，那么就必须提供 C1、C2、C3…Cn 一共 n 个补偿事务。</p>
+<p>如果 T1 到 Tn 都执行成功了，那么整个分布式事务就成功了，而如果在执行 Ti 时失败了，那么 T1 到 Ti 都需要回滚，此时就需要执行 Ci 到 C1 的补偿事务来保证最终一致性。</p>
+<p>需要注意的是，SAGA 事务在全局上的隔离级别是读未提交，而在局部分支上是根据实际的数据库隔离级别来决定的。</p>
+<p>总是，对于分布式事务的解决方案，并没有所谓的银弹，只有因地制宜而已，对于这些解决方案，由开源 Seata 框架支持了上述几乎所有方案，并且在两阶段提交的基础上做改进，提出了 AT 模式。</p>
+<blockquote>
+<p>Seata：<a target="_blank" rel="noopener" href="https://seata.io/">https://seata.io/</a></p>
+<p>另外，《深入理解 Java 虚拟机》的作者周志明老师开源了新书<a target="_blank" rel="noopener" href="http://icyfenix.cn/">《凤凰架构》</a>中也有专门对分布式事务做讲解。</p>
+</blockquote>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F/" rel="tag"># 分布式</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/posts/4635eb915ea6" rel="prev" title="JVM类加载机制">
+                  <i class="fa fa-chevron-left"></i> JVM类加载机制
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/posts/c98e3542f944" rel="next" title="Docker 容器原理浅析">
+                  Docker 容器原理浅析 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="beian"><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">渝ICP备2021012299号-1 </a>
+      <img src="/img/icp.png" alt=""><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=%E6%B8%9D%E5%85%AC%E7%BD%91%E5%AE%89%E5%A4%87%2050023402000631%E5%8F%B7" rel="noopener" target="_blank">渝公网安备 50023402000631号 </a>
+  </div>
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">假隐士</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">450k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">6:49</span>
+  </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/9.1.6/mermaid.min.js","integrity":"sha256-ZfzwelSToHk5YAcr9wbXAmWgyn9Jyq08fSLrLhZE89w="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

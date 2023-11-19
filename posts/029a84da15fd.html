@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/img/avatar.jpg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/img/avatar.jpg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/img/avatar.jpg">
+  <link rel="mask-icon" href="/img/avatar.jpg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha256-AbA177XfpSnFEvgpYu1jMygiLabzPCJCRIBtR5jGc0k=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"hanelalo.cn","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.13.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="Redis 学习笔记第一弹，主要是持久化机制，还简单介绍了过期键淘汰机制，和简单的主从搭建。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Redis学习笔记（一）">
+<meta property="og:url" content="http://hanelalo.cn/posts/029a84da15fd">
+<meta property="og:site_name" content="假隐士">
+<meta property="og:description" content="Redis 学习笔记第一弹，主要是持久化机制，还简单介绍了过期键淘汰机制，和简单的主从搭建。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-10-24T17:37:02.000Z">
+<meta property="article:modified_time" content="2023-11-19T13:53:28.588Z">
+<meta property="article:author" content="假隐士">
+<meta property="article:tag" content="Redis">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://hanelalo.cn/posts/029a84da15fd.html">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://hanelalo.cn/posts/029a84da15fd","path":"posts/029a84da15fd.html","title":"Redis学习笔记（一）"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Redis学习笔记（一） | 假隐士</title>
+  
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="假隐士" type="application/atom+xml">
+<link rel="alternate" href="/rss2.xml" title="假隐士" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">假隐士</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-首页"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-关于我"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于我</a></li><li class="menu-item menu-item-标签"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-分类"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-归档"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li><li class="menu-item menu-item-闲书杂记"><a href="/blog/" rel="section"><i class="fa fa-book fa-fw"></i>闲书杂记</a></li><li class="menu-item menu-item-菜谱"><a href="/cookbook/" rel="section"><i class="fa fa-link fa-fw"></i>菜谱</a></li><li class="menu-item menu-item-常用网站"><a href="/normal-website" rel="section"><i class="fas fa-atlas fa-fw"></i>常用网站</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Redis-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%B8%80%EF%BC%89"><span class="nav-number">1.</span> <span class="nav-text">Redis 学习笔记（一）</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8C%81%E4%B9%85%E5%8C%96"><span class="nav-number">1.1.</span> <span class="nav-text">持久化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#AOF-%E6%8C%81%E4%B9%85%E5%8C%96"><span class="nav-number">1.1.1.</span> <span class="nav-text">AOF 持久化</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#AOF-%E9%87%8D%E5%86%99"><span class="nav-number">1.1.1.1.</span> <span class="nav-text">AOF 重写</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#RDB-%E6%8C%81%E4%B9%85%E5%8C%96"><span class="nav-number">1.1.2.</span> <span class="nav-text">RDB 持久化</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Redis-%E8%BF%87%E6%9C%9F%E9%94%AE%E5%88%A0%E9%99%A4%E7%AD%96%E7%95%A5"><span class="nav-number">1.2.</span> <span class="nav-text">Redis 过期键删除策略</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#RDB-%E5%92%8C-AOF-%E5%AF%B9%E8%BF%87%E6%9C%9F%E9%94%AE%E7%9A%84%E5%A4%84%E7%90%86"><span class="nav-number">1.2.1.</span> <span class="nav-text">RDB 和 AOF 对过期键的处理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6%E5%AF%B9%E8%BF%87%E6%9C%9F%E9%94%AE%E7%9A%84%E5%A4%84%E7%90%86"><span class="nav-number">1.2.2.</span> <span class="nav-text">主从复制对过期键的处理</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6"><span class="nav-number">1.3.</span> <span class="nav-text">主从复制</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8E-Docker-%E6%90%AD%E5%BB%BA%E4%B8%80%E4%B8%AA%E4%B8%BB%E4%BB%8E%E6%9E%B6%E6%9E%84"><span class="nav-number">1.3.1.</span> <span class="nav-text">基于 Docker 搭建一个主从架构</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%BB%E6%9C%8D%E5%8A%A1%E5%99%A8%E9%85%8D%E7%BD%AE"><span class="nav-number">1.3.1.1.</span> <span class="nav-text">主服务器配置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%8E%E6%9C%8D%E5%8A%A1%E5%99%A8%E9%85%8D%E7%BD%AE"><span class="nav-number">1.3.1.2.</span> <span class="nav-text">从服务器配置</span></a></li></ol></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="假隐士"
+      src="/img/avatar.jpg">
+  <p class="site-author-name" itemprop="name">假隐士</p>
+  <div class="site-description" itemprop="description">做该做的事，然后接受它的事与愿违。</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">53</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">22</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/hanelalo" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;hanelalo" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+  <a href="https://github.com/hanelalo" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://hanelalo.cn/posts/029a84da15fd">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/img/avatar.jpg">
+      <meta itemprop="name" content="假隐士">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="假隐士">
+      <meta itemprop="description" content="做该做的事，然后接受它的事与愿违。">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Redis学习笔记（一） | 假隐士">
+      <meta itemprop="description" content="Redis 学习笔记第一弹，主要是持久化机制，还简单介绍了过期键淘汰机制，和简单的主从搭建。">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Redis学习笔记（一）
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2020-10-24 17:37:02" itemprop="dateCreated datePublished" datetime="2020-10-24T17:37:02+00:00">2020-10-24</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-11-19 13:53:28" itemprop="dateModified" datetime="2023-11-19T13:53:28+00:00">2023-11-19</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Redis/" itemprop="url" rel="index"><span itemprop="name">Redis</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>4.6k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>4 分钟</span>
+    </span>
+</div>
+
+            <div class="post-description">Redis 学习笔记第一弹，主要是持久化机制，还简单介绍了过期键淘汰机制，和简单的主从搭建。</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="Redis-学习笔记（一）"><a href="#Redis-学习笔记（一）" class="headerlink" title="Redis 学习笔记（一）"></a>Redis 学习笔记（一）</h1><h2 id="持久化"><a href="#持久化" class="headerlink" title="持久化"></a>持久化</h2><p>Redis 提供了两种持久化策略，AOF 和 RDB，AOF 是直接保存服务器保存的指令，服务器启动时再重新执行这些指令即可，而 RDB 则是保存一份内存的二进制快照，Redis 启动时加载，如果服务器开启了 AOF 功能，会优先加载 AOF 的文件，如果没开启 AOF 功能，才会加载 RDB 文件。</p>
+<h3 id="AOF-持久化"><a href="#AOF-持久化" class="headerlink" title="AOF 持久化"></a>AOF 持久化</h3><p>AOF 持久化是以命令请求的方式保存，AOF 分为命令追加、文件写入、文件同步三个步骤。</p>
+<ol>
+<li><p>命令追加。AOF 配置打开时，每执行完一个写命令之后，这次命令执行会以协议格式写到 aof_buf 缓冲区。</p>
+</li>
+<li><p>文件写入与同步。Redis 的进程从实现上是一个事件循环，这个循环中文件事件负责接收客户端命令请求和回复命令，时间事件执行一些定时任务，比如定期删除过期键。每次文件事件可能会处理一些写命令请求，就可能会有新的内容写入到 aof_buf 中，所以每个事件循环之后，都会考虑是否要将 aof_buf 中的内容写入到磁盘文件中。而在将 aof_buf 中的内容持久化时，根据<code>appendfsync</code>配置又会有不同的行为，在讲解<code>appendfsync</code>配置之前，先了解一下文件同步，现代操作系统在写入文件时，其实并不是调用写方法就真的写到文件里去，为了提高性能，采取按页存储的策略，当要写入的数据达到一定的大小时才真正的写到磁盘文件中，在此之前其实是将数据保存在缓存中，这个缓存叫做 PageCache，前面讲的文件写入，其实是将文件内容从 aof_buf 写入到了 PageCache，而同步的意思就是从 PageCache 将文件内容写入到真正的文件磁盘中。接下来看看<code>appendfsync</code>这项配置的说明及其特性：</p>
+<ul>
+<li><p>always</p>
+<p>将 aof_buf 中所有内容写入 PageCache 并同步到 AOF 文件中。因此 always 是三种配置种效率最低的一个，但是也因为是实时写入和同步的，安全性也是最高的。</p>
+</li>
+<li><p>everysec</p>
+<p>将 aof_buf 中的内容写入 AOF 文件的 PageCache 中，如果当前距离上次同步文件超过 1 秒，则同步文件，这个动作由单独的线程完成。因为并不是每个事件循环都会同步，所以效率上比 always 快，就算故障停机，也只会丢失 1 秒的数据而已，安全性也还在可接受的范围内。</p>
+</li>
+<li><p>no</p>
+<p>仅仅只是将 aof_buf 中的内容写入到 PageCache 中，不主动同步，何时同步交由操作系统决定。因为该模式下无需执行同步操作，所以效率是最快的，但是因为同步依赖于操作系统的判断，所以该模式的同步时间也是三种模式种最长的，并且安全性也不如前两种，如果不小心故障停机，会丢失上次同步之后的所有数据。</p>
+</li>
+</ul>
+</li>
+</ol>
+<h4 id="AOF-重写"><a href="#AOF-重写" class="headerlink" title="AOF 重写"></a>AOF 重写</h4><p>因为 AOF 是以命令请求的方式存储，当 AOF 中的文件的内容越来越多时，文件越来越大，可能会造成一些意想不到的问题，为避免一些不必要的文件膨胀，Redis 提供了文件重写的功能。这个功能具体有什么作用呢？</p>
+<p>举个例子，假如 redis 连续执行以下命令：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">redis&gt; RPUSH list <span class="string">&quot;A&quot;</span> <span class="string">&quot;B&quot;</span></span><br><span class="line">redis&gt; RPUSH list <span class="string">&quot;C&quot;</span></span><br><span class="line">redis&gt; RPUSH list <span class="string">&quot;D&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>三条命令都是向 list 里面加入一个元素，按照前面对 AOF 的理解，会保存三条命令请求的记录到 AOF 文件中，但是仔细想想，其实只需要保存一条命令请求就行了，一条命令将上面三条命令的内容全都写入，其实这就是重写的原理了。</p>
+<p>执行 AOF 重写的指令是<code>BGREWRITEAOF</code>。</p>
+<p>AOF 重写的时候并不是读取已经存在的 AOF 文件再进行重写，而是直接将当前内存中各个键值对最新的值以命令请求的方式保存。</p>
+<p>这里还会涉及到一个问题，就是缓冲区溢出的问题，如果一个键值对的内容很多的时候，比如哈希表、列表等，不加限制的话，可能会造成客户端的缓冲区溢出，所以 Redis 设定了保存的每条指令的大小，当一条指令的内容超过这个阈值时，就会使用新的指令记录剩下的内容。</p>
+<p>当执行 AOF 重写时，会阻塞当前的线程，所以 Redis 将这个指令的执行放到了子进程里面，当子进程执行重写的时候，如果服务器的服务进程又处理了写命令的请求，就会导致子进程重写完之后的结果和现在的内存实际的数据不一致。</p>
+<p>为了解决上面的问题，Redis 又提供了一个重写的缓冲区，在创建子进程执行重写开始，服务器接受的写命令，不仅会写入到 AOF 缓冲区，还会写入到 AOF 重写缓冲区，当子进程执行完之后，会通知父进程将 AOF 重写缓冲区的内容写入并同步到 AOF 重写的文件中，然后再将重写的文件改名，覆盖之前的 AOF 文件，整个过程中，父进程只在将重写缓冲区的内容写入和同步到文件以及改名时会阻塞，其他时候都可以正常处理请求。</p>
+<p>经过上面的讲解，其实 AOF 重写后的文件肯定是比普通的 AOF 持久化文件要小很多的，毕竟对指令进行了“压缩”。</p>
+<h3 id="RDB-持久化"><a href="#RDB-持久化" class="headerlink" title="RDB 持久化"></a>RDB 持久化</h3><p>RDB 持久化策略，是将当前内存中的键值对以二进制的形式保存到磁盘，Redis 启动时会自动加载 RDB 文件。</p>
+<p>要通过 RDB 的方式持久化，执行的命令是 <code>SAVE</code> 或者 <code>BGSAVE</code>，这两者的区别在于，<code>SAVE</code>会阻塞服务器进程，指令执行过程中，服务器不能处理任何指令请求，而<code>BGSAVE</code>则是派生一个子进程来持久化，父进程继续处理指令请求。</p>
+<p>因为 BGSAVE 是交由子进程执行，不会阻塞父进程处理命令请求，所以 redis 提供了<code>save</code> 配置项，用来配置自动执行<code>BGSAVE</code>。</p>
+<p>以官方提供的配置为例。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">save 900 1</span><br><span class="line">save 300 10</span><br><span class="line">save 60 10000</span><br></pre></td></tr></table></figure>
+
+<p>这三行配置的意思分别是：</p>
+<ul>
+<li>900 秒内至少进行了 1 次修改，则执行<code>BGSAVE</code></li>
+<li>300 秒内至少进行了 10 次修改，则执行<code>BGSAVE</code></li>
+<li>60 秒内至少执行了 1000 次修改，则执行<code>BGSAVE</code></li>
+</ul>
+<h2 id="Redis-过期键删除策略"><a href="#Redis-过期键删除策略" class="headerlink" title="Redis 过期键删除策略"></a>Redis 过期键删除策略</h2><p>解决方案分为三种：</p>
+<ul>
+<li><p>定时删除</p>
+<p>为每个设置过期时间的键建立一个定时器，到时间就删除该键。如果为每个有时效的键都建立一个定时器，那么当过期键数量到达一定量级时，就算内存充裕，就会造成 CPU 资源的紧张。</p>
+</li>
+<li><p>惰性删除</p>
+<p>当键过期时先不管，访问键时，再判断当前键是否过期，过期就执行删除逻辑，没过期就返回值，这种策略对 CPU 来说很友好，但是如果一个过期键长期不被访问，就会长期存在于内存中，当这样的键较多时，就会造成内存的浪费。</p>
+</li>
+<li><p>定期删除</p>
+<p>设定一个时间周期，每隔一个时间周期对数据库检查一次，删除里面的过期键。从定时删除和惰性删除的介绍来看，都并不是很完美，总会顾此失彼，定时删除对 CPU 不友好，惰性删除可能对内存不是很友好，定时删除则更像是两者折中的策略，既不会造成很大的内存浪费，也不用建立很多定时器对 CPU 造成很大压力。</p>
+</li>
+</ul>
+<p>Redis 采用的是<strong>惰性删除+定期删除</strong>的组合策略。</p>
+<h3 id="RDB-和-AOF-对过期键的处理"><a href="#RDB-和-AOF-对过期键的处理" class="headerlink" title="RDB 和 AOF 对过期键的处理"></a>RDB 和 AOF 对过期键的处理</h3><p>在之前讲过 RDB 和 AOF 两种持久化方案，那么这两种持久化方案针对过期键会怎么处理呢。主要关注以下三个问题：</p>
+<ol>
+<li><p><strong>RDB 和 AOF 在持久化时，如何处理过期键？</strong></p>
+<p>RDB 在持久化时，会对过期键检查，过期的键不会持久化到二进制文件中。</p>
+<p>AOF 持久化时，并不会查看键是否过期，但是因为 AOF 会记录每个写指令，所以当键过期后，惰性删除或者定时删除时，肯定会有一个删除过期键的指令，这个指令也会被显式记录到 AOF 文件中。</p>
+</li>
+<li><p><strong>RDB 和 AOF 在加载时，如何处理过期键？</strong></p>
+<p>当 RDB 文件加载时，如果  redis 运行在复制模式下，那么主服务器不会加载已经过期的键，从服务则全部都会加载，但是主从同步的时候，因为主服务器上已经没有了过期键，所以从服务器上过期的键也会被同步掉。</p>
+</li>
+<li><p><strong>AOF 重写时，如何处理过期键？</strong></p>
+<p>AOF 重写和 RDB 持久化一样，会忽略掉过期键。</p>
+</li>
+</ol>
+<h3 id="主从复制对过期键的处理"><a href="#主从复制对过期键的处理" class="headerlink" title="主从复制对过期键的处理"></a>主从复制对过期键的处理</h3><p>主服务器接收到读请求时，会检查键是否过期，过期则删除键，并向从服务器发送删除指令，使从服务器上的过期键也被删除。</p>
+<p>但是如果读指令发送到了从服务器，从服务器并不会检查键是否过期，而是直接返回键的值，直到接收到主服务器发来的删除该过期键的指令之后，从服务器上的过期键才会被删除。</p>
+<h2 id="主从复制"><a href="#主从复制" class="headerlink" title="主从复制"></a>主从复制</h2><p>redis 主从复制有两个版本，一个是 redis 2.8 以前的版本，一个是从 redis 2.8 开始的版本。</p>
+<p>不管是新的还是旧的版本，对于主从复制大方向上考虑两种情况：</p>
+<ul>
+<li>从服务器第一次和主服务器同步数据</li>
+<li>从服务器和主服务器断开连接一段时间后，重新连接时同步数据</li>
+</ul>
+<p>不管哪种情况，都是为了保证主从服务器上的数据一致性，所以当主服务器执行了写命令时，会发生命令传播，就是主服务器会向所有从服务器发送刚刚执行的写指令，保证数据一致性。</p>
+<p><strong>那么 redis 2.8 以前的版本和新版本的区别在哪里？</strong></p>
+<p><em>先看看 redis 2.8 以前的版本：</em></p>
+<p>当从服务器第一次向主服务器同步数据。</p>
+<ol>
+<li>向主服务器发送一条 <code>SYNC</code> 指令。</li>
+<li>主服务器收到 <code>SYNC</code> 指令后，执行 <code>BGSAVE</code> 生成 RDB 文件，同时生成一个缓冲区记录从执行 <code>BGSAVE</code> 开始执行的所有写命令。</li>
+<li>主服务器生成 RDB 后，将 RDB 文件发送给从服务器。</li>
+<li>从服务器载入接收到了 RDB 文件到内存。</li>
+<li>主服务器将刚生成的缓冲区中的指令发送给从服务器，从服务器执行后，和主服务器的数据达成一致。</li>
+</ol>
+<p>执行完以上步骤，当主服务器再接受到写指令时，会向从服务器也发送一次相同的指令，保证数据一致。</p>
+<p>如果从服务器和主服务器意外断开连接，再重新连接时，会再次执行上面所有步骤，虽然最终达到了数据一致，但是其实没必要这样做，因为如果断开连接之前的数据，从服务器有持久化，那重新连接时其实只需要同步在断开连接期间主服务器进行的修改即可。</p>
+<p>所以旧版复制实现，在重连时，效率不够。</p>
+<p><em>在 redis 2.8 开始，实现了新的复制方式。</em></p>
+<p>redis 2.8 版本开始的复制实现，依靠 <code>PSYNC</code> 命令。</p>
+<p><code>PSYNC</code> 有两种模式，一种时完整重同步，是针对从服务器第一次同步数据的实现，一种是部分重同步，针对从服务器断开重连的实现。</p>
+<p>针对第一次同步数据的情况，也就是完整重同步，和 <code>SYNC</code> 一样的处理。</p>
+<p>如果是断开重连的情况，触发的就是部分重同步，这里涉及到一个复制偏移量的概念，主服务器会记录当前已经被从服务器同步的偏移量，从服务器也会记录自己的同步偏移量，断开重连后，当主从偏移量不一致时，就复制偏差的这部分数据就好了。</p>
+<p>举个例子，最开始主服务器 M 复制偏移量为 10000，从服务器 A、B、C 的偏移量也是 10000，此时主从数据一致，然后从服务器 A 和主服务器断开连接，此后，主服务器执行了写指令，发生指令传播，B、C 从服务器复制成功，M、B、C 三台服务器的偏移量变为 10033，然后  A 服务器恢复连接，此时和主服务器有 33 个偏移量的数据未复制，向从服务器发送 <code>PSYNC</code> 指令，并报告当前偏移量时 10000，最终主从服务器就会同步中间这 33 个偏移量的数据。</p>
+<h3 id="基于-Docker-搭建一个主从架构"><a href="#基于-Docker-搭建一个主从架构" class="headerlink" title="基于 Docker 搭建一个主从架构"></a>基于 Docker 搭建一个主从架构</h3><h4 id="主服务器配置"><a href="#主服务器配置" class="headerlink" title="主服务器配置"></a>主服务器配置</h4><p>主要修改以下几项配置：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">requirepass &lt;password&gt; # 设置主服务器 redis 密码</span><br><span class="line"># bind 127.0.0.1 </span><br><span class="line">pretected-mode no</span><br></pre></td></tr></table></figure>
+
+<h4 id="从服务器配置"><a href="#从服务器配置" class="headerlink" title="从服务器配置"></a>从服务器配置</h4><p>从服务器修改配置项如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">requirepass &lt;password&gt; # 从服务器 redis 密码</span><br><span class="line">slaveof &lt;master_ip&gt; &lt;master_port&gt;</span><br><span class="line">masterauth &lt;master_password&gt;</span><br></pre></td></tr></table></figure>
+
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Redis/" rel="tag"># Redis</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/posts/5decb74418e5" rel="prev" title="Executor框架">
+                  <i class="fa fa-chevron-left"></i> Executor框架
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/posts/b8f5ebf685e8" rel="next" title="静态代理和动态代理">
+                  静态代理和动态代理 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="beian"><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">渝ICP备2021012299号-1 </a>
+      <img src="/img/icp.png" alt=""><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=%E6%B8%9D%E5%85%AC%E7%BD%91%E5%AE%89%E5%A4%87%2050023402000631%E5%8F%B7" rel="noopener" target="_blank">渝公网安备 50023402000631号 </a>
+  </div>
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">假隐士</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">450k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">6:49</span>
+  </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/9.1.6/mermaid.min.js","integrity":"sha256-ZfzwelSToHk5YAcr9wbXAmWgyn9Jyq08fSLrLhZE89w="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+
+  
+
+
+
+
+
+</body>
+</html>
